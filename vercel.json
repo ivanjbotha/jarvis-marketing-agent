@@ -1,0 +1,20 @@
+{
+  "name": "jarvis-ai-marketing",
+  "version": 2,
+  "public": true,
+  "builds": [
+    {
+      "src": "jarvis-agent-dashboard.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "jarvis-agent-dashboard.html"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
