@@ -461,83 +461,63 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             // 2.5 BPM = 1 beat every 24 seconds (extremely slow)
-            const breathePhase = Math.sin(entityTime * 0.00436) * 0.5 + 0.5; // 0 to 1, 2.5 BPM
-            const activePhase = isSpeaking ? Math.sin(entityTime * 0.0262) * 0.5 + 0.5 : breathePhase; // 15 BPM when speaking
+            const breathePhase = Math.sin(entityTime * 0.00436) * 0.5 + 0.5;
+            const activePhase = isSpeaking ? Math.sin(entityTime * 0.0262) * 0.5 + 0.5 : breathePhase;
 
-            // Draw organic flowing entity with multiple layers
-            for (let layer = 0; layer < 4; layer++) {
-                const points = [];
-                const baseRadius = 40 + (layer * 35);
-                const segments = 120;
+            // Draw single organic blob with flowing distortions
+            const points = [];
+            const baseRadius = 90;
+            const segments = 200;
+            const amplitude = isSpeaking ? 35 : 18; // Much bigger distortions
 
-                // Amplitude varies dramatically based on speaking state
-                const restAmplitude = 4 - layer * 0.6; // Subtle at rest
-                const speakingAmplitude = 28 - layer * 5; // Dramatic when speaking
-                const layerAmplitude = isSpeaking ? speakingAmplitude : restAmplitude;
+            // Create a flowing organic blob shape
+            for (let i = 0; i <= segments; i++) {
+                const angle = (i / segments) * Math.PI * 2;
 
-                // Create flowing organic waves that move around the circle
-                for (let i = 0; i <= segments; i++) {
-                    const angle = (i / segments) * Math.PI * 2;
+                // Multiple large organic waves that create bulges and indentations
+                const bulge1 = Math.sin(angle * 2.5 - entityTime * 0.006) * amplitude;
+                const bulge2 = Math.sin(angle * 1.8 - entityTime * 0.004 + 2) * (amplitude * 0.7);
+                const bulge3 = Math.sin(angle * 3.2 - entityTime * 0.008 - 1.5) * (amplitude * 0.5);
+                const bulge4 = Math.sin(angle * 1.2 - entityTime * 0.003 + 3) * (amplitude * 0.6);
 
-                    // Multiple flowing waves that orbit around the entity
-                    const orbitalWave1 = Math.sin(angle * 3 - entityTime * 0.008 + layer * 0.5) * (layerAmplitude * 0.5);
-                    const orbitalWave2 = Math.sin(angle * 2 - entityTime * 0.004 - layer * 0.3) * (layerAmplitude * 0.3);
-                    const orbitalWave3 = Math.sin(angle - entityTime * 0.012 + layer * 0.2) * (layerAmplitude * 0.2);
+                // Breathing modulation
+                const breathe = (isSpeaking ? activePhase : breathePhase) * amplitude * 0.4;
 
-                    // Add gentle breathing with the orbital motion
-                    const breatheModulation = (isSpeaking ? activePhase : breathePhase) * layerAmplitude * 0.3;
+                const totalDistortion = bulge1 + bulge2 + bulge3 + bulge4 + breathe;
+                const radius = baseRadius + totalDistortion;
 
-                    const totalWave = orbitalWave1 + orbitalWave2 + orbitalWave3 + breatheModulation;
-                    const radius = baseRadius + totalWave;
-
-                    const x = centerX + Math.cos(angle) * radius;
-                    const y = centerY + Math.sin(angle) * radius;
-                    points.push({ x, y });
-                }
-
-                // Draw smooth organic curve
-                ctx.beginPath();
-                ctx.moveTo(points[0].x, points[0].y);
-
-                // Use quadratic curves for smooth organic flow
-                for (let p = 1; p < points.length; p++) {
-                    const curr = points[p];
-                    const next = points[(p + 1) % points.length];
-
-                    const cpx = (curr.x + next.x) / 2;
-                    const cpy = (curr.y + next.y) / 2;
-                    ctx.quadraticCurveTo(curr.x, curr.y, cpx, cpy);
-                }
-
-                // Close path smoothly
-                ctx.quadraticCurveTo(points[points.length - 1].x, points[points.length - 1].y, points[0].x, points[0].y);
-
-                // Opacity responds to speaking
-                const opacity = isSpeaking ? 0.8 - layer * 0.15 : 0.35 - layer * 0.08;
-
-                ctx.strokeStyle = `rgba(0, 255, 255, ${opacity})`;
-                ctx.lineWidth = 2;
-                ctx.stroke();
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                points.push({ x, y });
             }
 
-            // Inner organic core - the "heart" of the entity
-            const coreRestSize = 15;
-            const coreSpeakingSize = 25;
-            const corePulse = isSpeaking ? activePulse : breathePulse;
-            const coreSize = coreRestSize + (corePulse * (coreSpeakingSize - coreRestSize));
+            // Draw the blob with smooth curves
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
 
-            // Draw core with glow
+            for (let p = 1; p < points.length; p++) {
+                const curr = points[p];
+                const next = points[(p + 1) % points.length];
+                const cpx = (curr.x + next.x) / 2;
+                const cpy = (curr.y + next.y) / 2;
+                ctx.quadraticCurveTo(curr.x, curr.y, cpx, cpy);
+            }
+
+            ctx.quadraticCurveTo(points[points.length - 1].x, points[points.length - 1].y, points[0].x, points[0].y);
+
+            const opacity = isSpeaking ? 0.9 : 0.5;
+            ctx.strokeStyle = `rgba(0, 255, 255, ${opacity})`;
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+
+            // Inner core glow
+            const corePulse = isSpeaking ? activePhase : breathePhase;
+            const coreSize = 20 + (corePulse * 15);
+
             ctx.beginPath();
             ctx.arc(centerX, centerY, coreSize, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(0, 255, 255, ${isSpeaking ? 0.6 : 0.2})`;
+            ctx.fillStyle = `rgba(0, 255, 255, ${isSpeaking ? 0.7 : 0.25})`;
             ctx.fill();
-
-            // Core outline
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, coreSize + 3, 0, Math.PI * 2);
-            ctx.strokeStyle = `rgba(0, 255, 255, ${isSpeaking ? 1.0 : 0.5})`;
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
 
             // Very slow time increment - barely moves at rest
             entityTime += 1; // Increment every frame, but the sin wave is very slow
