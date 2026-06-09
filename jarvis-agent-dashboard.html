@@ -172,6 +172,26 @@
             box-shadow: 0 0 50px rgba(255, 68, 68, 0.5), inset 0 0 20px rgba(255, 68, 68, 0.1);
         }
 
+        .action-btn {
+            padding: 10px 16px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: #00ffff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .action-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+        }
+
         .status {
             font-size: 10px;
             letter-spacing: 1px;
@@ -372,10 +392,16 @@
         <div class="iris-section">
             <div class="iris-container">
                 <canvas id="waveCanvas"></canvas>
-                <button class="mic-button" id="micButton"></button>
+                <button class="mic-button" id="wakeButton" style="display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">Wake Up</button>
+                <button class="mic-button" id="micButton" style="display: none;"></button>
             </div>
-            <div class="status" id="statusDisplay">CLICK TO COMMAND</div>
+            <div class="status" id="statusDisplay">System Standby</div>
             <div class="conversation-box" id="conversation"></div>
+            <div id="actionButtons" style="display: none; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 15px; width: 100%;">
+                <button class="action-btn" onclick="getStatusUpdate()">Status Update</button>
+                <button class="action-btn" onclick="giveCommand()">New Command</button>
+                <button class="action-btn" onclick="speakCustom()">Speak Custom</button>
+            </div>
         </div>
 
         <!-- BOTTOM LEFT - AGENT NETWORK -->
@@ -532,9 +558,47 @@
         drawEntity();
 
         // DOM Elements
+        const wakeButton = document.getElementById('wakeButton');
         const micButton = document.getElementById('micButton');
         const statusDisplay = document.getElementById('statusDisplay');
         const conversation = document.getElementById('conversation');
+        const actionButtons = document.getElementById('actionButtons');
+
+        let isAwake = false;
+
+        // Wake up JARVIS
+        async function wakeUp() {
+            isAwake = true;
+            wakeButton.style.display = 'none';
+            micButton.style.display = 'flex';
+            actionButtons.style.display = 'flex';
+            statusDisplay.textContent = 'ONLINE';
+
+            addMessage('JARVIS initialized', 'system');
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            const greeting = 'Good morning. I am online and ready to assist. What would you like me to do today?';
+            addMessage(greeting, 'jarvis');
+            speakAsJarvis(greeting);
+        }
+
+        function getStatusUpdate() {
+            conversation.innerHTML = '';
+            addMessage('Status update requested', 'user');
+            speakAsJarvis('Excellent. All agents are online. Research division has 3 active projects. Content writer has drafted 12 variations. No urgent items requiring attention. Shall I provide a detailed breakdown?');
+        }
+
+        function giveCommand() {
+            statusDisplay.textContent = 'LISTENING...';
+            recognition.start();
+        }
+
+        function speakCustom() {
+            statusDisplay.textContent = 'LISTENING...';
+            recognition.start();
+        }
+
+        wakeButton.addEventListener('click', wakeUp);
 
         // Speech Recognition
         recognition.continuous = false;
