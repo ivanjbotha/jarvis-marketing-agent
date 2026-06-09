@@ -460,9 +460,9 @@
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 2.5 BPM = 1 beat every 24 seconds (extremely slow)
-            const breathePhase = Math.sin(entityTime * 0.00436) * 0.5 + 0.5;
-            const activePhase = isSpeaking ? Math.sin(entityTime * 0.0262) * 0.5 + 0.5 : breathePhase;
+            // 1.25 BPM = 1 beat every 48 seconds (ultra-slow meditation)
+            const breathePhase = Math.sin(entityTime * 0.00218) * 0.5 + 0.5;
+            const activePhase = isSpeaking ? Math.sin(entityTime * 0.0131) * 0.5 + 0.5 : breathePhase;
 
             // Draw multiple nested organic blobs with spacing
             const segments = 200;
