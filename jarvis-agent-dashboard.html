@@ -550,44 +550,45 @@
         });
 
         async function speakAsJarvis(text) {
-            // Use browser speech synthesis with MALE BRITISH VOICE
+            console.log('Speaking with voice: Sq93GQT4X1lKDXsQcixO');
+
+            if (elevenLabsKey) {
+                try {
+                    const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/Sq93GQT4X1lKDXsQcixO', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'xi-api-key': elevenLabsKey
+                        },
+                        body: JSON.stringify({ text: text })
+                    });
+
+                    if (response.ok) {
+                        const audioBlob = await response.blob();
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        const audio = new Audio(audioUrl);
+                        audio.play();
+                        console.log('✓ ElevenLabs audio playing');
+                        addActivity('Speaking...', 'success');
+                        return;
+                    } else {
+                        console.error('ElevenLabs error:', response.status);
+                    }
+                } catch (error) {
+                    console.error('ElevenLabs error:', error.message);
+                }
+            }
+
+            // Fallback to browser TTS
+            console.log('Fallback to browser voice');
             const utterance = new SpeechSynthesisUtterance(text);
-
-            // Slow, professional pacing
-            utterance.rate = 0.75; // Slower for gentleman effect
-            utterance.pitch = 0.6; // Deep male voice
+            utterance.rate = 0.75;
+            utterance.pitch = 0.6;
             utterance.volume = 1.0;
-
-            // Get all available voices and find the best male British voice
             const voices = synth.getVoices();
-
-            // Try to find a male British voice
-            let selectedVoice = voices.find(voice =>
-                voice.lang.startsWith('en-GB') &&
-                (voice.name.toLowerCase().includes('male') ||
-                 voice.name.toLowerCase().includes('man') ||
-                 voice.name.toLowerCase().includes('daniel') ||
-                 voice.name.toLowerCase().includes('george') ||
-                 voice.name.toLowerCase().includes('alex'))
-            );
-
-            // Fallback to any British voice
-            if (!selectedVoice) {
-                selectedVoice = voices.find(voice => voice.lang.startsWith('en-GB'));
-            }
-
-            // Last resort - use first available voice and make it sound male
-            if (!selectedVoice) {
-                selectedVoice = voices[0];
-            }
-
-            utterance.voice = selectedVoice;
-
-            console.log('Using voice:', selectedVoice.name, selectedVoice.lang);
-            console.log('Rate:', utterance.rate, 'Pitch:', utterance.pitch);
-
+            const britishVoice = voices.find(voice => voice.lang.startsWith('en-GB')) || voices[0];
+            utterance.voice = britishVoice;
             synth.speak(utterance);
-            addActivity(`Speaking in: ${selectedVoice.name}`, 'success');
         }
 
         async function processUserInput(input) {
