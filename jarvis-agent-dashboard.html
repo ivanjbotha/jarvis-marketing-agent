@@ -460,9 +460,9 @@
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Very slow pulse - this is the breathing of the entity
-            const breathePulse = Math.sin(entityTime * 0.02) * 0.5 + 0.5; // 0 to 1, very slow
-            const activePulse = isSpeaking ? Math.sin(entityTime * 0.15) * 0.5 + 0.5 : breathePulse; // Much faster when speaking
+            // 10 BPM = 1 beat every 6 seconds (at 60fps = 360 frames per beat)
+            const breathePulse = Math.sin(entityTime * 0.0175) * 0.5 + 0.5; // 0 to 1, 10 BPM
+            const activePulse = isSpeaking ? Math.sin(entityTime * 0.105) * 0.5 + 0.5 : breathePulse; // 60 BPM when speaking
 
             // Draw organic flowing entity with multiple layers
             for (let layer = 0; layer < 4; layer++) {
