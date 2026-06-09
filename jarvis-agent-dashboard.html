@@ -391,52 +391,74 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        let wavePhase = 0;
-        const waveFrequency = 0.05;
-        const waveAmplitude = 10;
+        let pulsePhase = 0;
 
-        function drawWaves() {
+        function drawGlowingPulse() {
             const centerX = canvas.width / (2 * window.devicePixelRatio);
             const centerY = canvas.height / (2 * window.devicePixelRatio);
-            const baseRadius = 40;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw multiple wave rings
-            for (let ring = 0; ring < 5; ring++) {
-                const points = [];
-                const radius = baseRadius + ring * 25;
-                const segments = 180;
+            // Calculate heartbeat pulse (0 to 1)
+            const beatCycle = (Math.sin(pulsePhase) + 1) / 2;
+            const pulseIntensity = isSpeaking ? 1.2 : 0.8;
+            const pulseStrength = beatCycle * pulseIntensity;
 
-                for (let i = 0; i <= segments; i++) {
-                    const angle = (i / segments) * Math.PI * 2;
-                    const waveOffset = Math.sin(wavePhase + ring * 0.3) * (isSpeaking ? waveAmplitude * 1.5 : waveAmplitude);
-                    const r = radius + waveOffset;
+            // Draw glowing rings with blur effect
+            for (let ring = 0; ring < 6; ring++) {
+                const delay = ring * 0.15;
+                const pulsedBeat = (Math.sin(pulsePhase - delay * 3) + 1) / 2;
 
-                    const x = centerX + Math.cos(angle) * r;
-                    const y = centerY + Math.sin(angle) * r;
+                // Base radius for each ring
+                const baseRadius = 20 + ring * 18;
+                const radius = baseRadius + (pulsedBeat * 15);
 
-                    points.push({ x, y });
+                // Create glow effect with multiple circles
+                for (let glow = 4; glow > 0; glow--) {
+                    const glowRadius = radius + (glow * 3);
+                    const glowOpacity = (0.5 / glow) * (isSpeaking ? 0.8 : 0.4) * (1 - ring * 0.1);
+
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, glowRadius, 0, Math.PI * 2);
+                    ctx.strokeStyle = `rgba(0, 200, 255, ${glowOpacity})`;
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
                 }
 
-                // Draw wave line
+                // Main bright ring
                 ctx.beginPath();
-                ctx.moveTo(points[0].x, points[0].y);
-                for (let i = 1; i < points.length; i++) {
-                    ctx.lineTo(points[i].x, points[i].y);
-                }
-
-                const opacity = isSpeaking ? 0.6 - ring * 0.1 : 0.3 - ring * 0.05;
-                ctx.strokeStyle = `rgba(0, 255, 255, ${opacity})`;
-                ctx.lineWidth = 2;
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                const brightness = isSpeaking ? 1.0 : 0.7;
+                const mainOpacity = (0.8 - ring * 0.1) * brightness;
+                ctx.strokeStyle = `rgba(0, 255, 255, ${mainOpacity})`;
+                ctx.lineWidth = 2.5;
+                ctx.shadow = true;
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = `rgba(0, 255, 255, ${mainOpacity * 0.6})`;
                 ctx.stroke();
             }
 
-            wavePhase += waveFrequency;
-            animationFrameId = requestAnimationFrame(drawWaves);
+            // Center core glow
+            const coreGlowSize = 30 + (pulseStrength * 10);
+            for (let g = 3; g > 0; g--) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, coreGlowSize + (g * 4), 0, Math.PI * 2);
+                const coreOpacity = (0.4 / g) * (isSpeaking ? 0.9 : 0.5);
+                ctx.fillStyle = `rgba(0, 200, 255, ${coreOpacity})`;
+                ctx.fill();
+            }
+
+            // Bright center core
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, coreGlowSize, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(0, 255, 255, ${isSpeaking ? 0.6 : 0.3})`;
+            ctx.fill();
+
+            pulsePhase += isSpeaking ? 0.08 : 0.04;
+            animationFrameId = requestAnimationFrame(drawGlowingPulse);
         }
 
-        drawWaves();
+        drawGlowingPulse();
 
         // DOM Elements
         const centerButton = document.getElementById('centerButton');
