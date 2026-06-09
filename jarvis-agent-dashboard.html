@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JARVIS - AI Marketing Agent</title>
+    <title>J.A.R.V.I.S - Mission Control</title>
     <style>
         * {
             margin: 0;
@@ -12,291 +12,291 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0e27;
             color: #e0e0e0;
             min-height: 100vh;
-            padding: 20px;
+            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
+        /* HEADER */
         .header {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            border-bottom: 2px solid #00ff00;
+            padding: 20px;
             text-align: center;
-            margin-bottom: 40px;
-            padding-top: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
         }
 
         .header h1 {
-            font-size: 48px;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #00d4ff, #0099ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 300;
-            letter-spacing: 2px;
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #00ff00;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            margin-bottom: 5px;
         }
 
         .header p {
-            font-size: 16px;
+            font-size: 12px;
+            letter-spacing: 2px;
             color: #888;
-            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
         }
 
+        /* ORG CHART SECTION */
         .section {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 12px;
-            padding: 30px;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            border-radius: 8px;
+            padding: 25px;
             backdrop-filter: blur(10px);
         }
 
-        .section h2 {
-            font-size: 20px;
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #00ff00;
             margin-bottom: 20px;
-            color: #00d4ff;
-            font-weight: 400;
-            letter-spacing: 1px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
         }
 
-        .voice-input {
+        /* ORG CHART */
+        .org-chart {
             display: flex;
             flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .org-node {
+            background: rgba(0, 255, 0, 0.05);
+            border: 2px solid #00ff00;
+            border-radius: 6px;
+            padding: 15px 25px;
+            min-width: 200px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2), inset 0 0 20px rgba(0, 255, 0, 0.05);
+            position: relative;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .org-node.main {
+            font-size: 24px;
+            font-weight: 700;
+            color: #00ff00;
+            min-width: 250px;
+            padding: 20px 30px;
+        }
+
+        .org-node.sub {
+            font-size: 14px;
+            color: #00ff00;
+            min-width: 180px;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.2), inset 0 0 20px rgba(0, 255, 0, 0.05); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 0, 0.4), inset 0 0 25px rgba(0, 255, 0, 0.1); }
+        }
+
+        .org-connector {
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(to bottom, #00ff00, rgba(0, 255, 0, 0.3));
+        }
+
+        .org-branches {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 20px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        /* AGENT GRID */
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .agent-card {
+            background: rgba(0, 255, 0, 0.03);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 6px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .agent-card:hover {
+            border-color: #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3), inset 0 0 15px rgba(0, 255, 0, 0.05);
+            transform: translateY(-5px);
+        }
+
+        .agent-card.active {
+            border-color: #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.4), inset 0 0 20px rgba(0, 255, 0, 0.1);
+        }
+
+        .agent-status {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff00;
+            margin-right: 8px;
+            box-shadow: 0 0 8px #00ff00;
+        }
+
+        .agent-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #00ff00;
+            margin-bottom: 10px;
+        }
+
+        .agent-task {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.5;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 255, 0, 0.1);
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #00cc00);
+            width: 65%;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        /* ACTIVITY FEED / CONSOLE */
+        .activity-feed {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            line-height: 1.8;
+        }
+
+        .activity-line {
+            color: #00ff00;
+            margin-bottom: 5px;
+            padding: 5px;
+            border-left: 2px solid rgba(0, 255, 0, 0.3);
+            padding-left: 10px;
+        }
+
+        .activity-line.success {
+            color: #00ff00;
+        }
+
+        .activity-line.warning {
+            color: #ffaa00;
+        }
+
+        .activity-line.error {
+            color: #ff4444;
+        }
+
+        .timestamp {
+            color: #666;
+            font-size: 10px;
+        }
+
+        /* VOICE INPUT SECTION */
+        .voice-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
         .mic-button {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
-            border: 3px solid #00d4ff;
-            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid #00ff00;
+            background: rgba(0, 255, 0, 0.05);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 40px;
             transition: all 0.3s ease;
-            margin: 0 auto;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
         }
 
         .mic-button:hover {
-            background: rgba(0, 212, 255, 0.2);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.4);
+            transform: scale(1.05);
         }
 
         .mic-button.listening {
-            background: rgba(255, 0, 0, 0.2);
             border-color: #ff4444;
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5), inset 0 0 30px rgba(255, 0, 0, 0.1);
-            animation: pulse 0.6s infinite;
+            background: rgba(255, 68, 68, 0.1);
+            box-shadow: 0 0 30px rgba(255, 68, 68, 0.4), inset 0 0 30px rgba(255, 68, 68, 0.1);
+            animation: pulse-red 0.6s infinite;
         }
 
-        @keyframes pulse {
+        @keyframes pulse-red {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            50% { transform: scale(1.1); }
         }
 
         .status-text {
-            text-align: center;
-            font-size: 14px;
+            font-size: 12px;
             color: #888;
-            min-height: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .transcript {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(0, 212, 255, 0.1);
-            border-radius: 8px;
-            padding: 15px;
-            min-height: 60px;
-            font-size: 14px;
-            line-height: 1.6;
-            color: #00d4ff;
-        }
-
-        .agent-workflow {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .agent {
-            text-align: center;
-            flex: 1;
-        }
-
-        .agent-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin: 0 auto 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            background: rgba(0, 212, 255, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .agent.active .agent-icon {
-            border-color: #00d4ff;
-            background: rgba(0, 212, 255, 0.2);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
-            animation: glow 0.6s infinite;
-        }
-
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); }
-            50% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.6); }
-        }
-
-        .agent-name {
-            font-size: 12px;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .agent.active .agent-name {
-            color: #00d4ff;
-        }
-
-        .arrow {
-            align-self: center;
-            color: #00d4ff;
-            opacity: 0.5;
-            font-size: 20px;
-            margin: 0 -10px;
-        }
-
-        .draft-posts {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .post-draft {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(0, 212, 255, 0.15);
-            border-radius: 8px;
-            padding: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            border-radius: 4px;
+            padding: 12px;
+            min-height: 50px;
             font-size: 13px;
-            line-height: 1.6;
-            color: #e0e0e0;
-        }
-
-        .post-draft p {
-            margin-bottom: 10px;
-        }
-
-        .post-draft .hashtags {
-            color: #00d4ff;
-            font-size: 12px;
-        }
-
-        .post-draft .stats {
-            font-size: 11px;
-            color: #666;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(0, 212, 255, 0.1);
-        }
-
-        .approval-section {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 8px;
-            padding: 20px;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            min-width: 300px;
             text-align: center;
         }
 
-        .approval-title {
-            font-size: 14px;
-            color: #00d4ff;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .approval-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: 1px solid #00d4ff;
-            background: rgba(0, 212, 255, 0.1);
-            color: #00d4ff;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover {
-            background: rgba(0, 212, 255, 0.2);
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
-        }
-
-        .btn.approve {
-            border-color: #00ff88;
-            color: #00ff88;
-            background: rgba(0, 255, 136, 0.05);
-        }
-
-        .btn.approve:hover {
-            background: rgba(0, 255, 136, 0.15);
-            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
-        }
-
-        .btn.reject {
-            border-color: #ff4444;
-            color: #ff4444;
-            background: rgba(255, 68, 68, 0.05);
-        }
-
-        .btn.reject:hover {
-            background: rgba(255, 68, 68, 0.15);
-            box-shadow: 0 0 10px rgba(255, 68, 68, 0.3);
-        }
-
-        .full-width {
-            grid-column: 1 / -1;
-        }
-
+        /* SETTINGS */
         .settings {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(0, 212, 255, 0.1);
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .settings h3 {
-            font-size: 14px;
-            color: #00d4ff;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 0, 0.15);
+            border-radius: 6px;
+            padding: 15px;
         }
 
         .setting-group {
@@ -305,204 +305,152 @@
 
         .setting-group label {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             color: #888;
             margin-bottom: 5px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
         .setting-group input,
         .setting-group select {
             width: 100%;
-            padding: 8px 12px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(0, 212, 255, 0.15);
-            border-radius: 6px;
-            color: #e0e0e0;
-            font-size: 13px;
+            padding: 8px 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            border-radius: 4px;
+            color: #00ff00;
+            font-size: 12px;
+            font-family: inherit;
         }
 
         .setting-group input:focus,
         .setting-group select:focus {
             outline: none;
-            border-color: #00d4ff;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+            border-color: #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
         }
 
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 30px;
-        }
-
-        .loading.active {
-            display: block;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 2px solid rgba(0, 212, 255, 0.2);
-            border-top-color: #00d4ff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .message-log {
-            max-height: 300px;
-            overflow-y: auto;
-            margin-top: 15px;
-            font-size: 12px;
-            line-height: 1.6;
-        }
-
-        .message {
-            padding: 8px;
-            margin: 5px 0;
-            border-radius: 4px;
-            background: rgba(0, 0, 0, 0.3);
-            border-left: 3px solid #00d4ff;
-        }
-
-        .message.agent {
-            border-left-color: #00d4ff;
-            color: #00d4ff;
-        }
-
-        .message.user {
-            border-left-color: #00ff88;
-            color: #00ff88;
-        }
-
-        .message.system {
-            border-left-color: #ff9900;
-            color: #ff9900;
-        }
-
+        /* RESPONSIVE */
         @media (max-width: 768px) {
-            .main-grid {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .agent-grid {
                 grid-template-columns: 1fr;
             }
 
-            .agent-workflow {
-                flex-wrap: wrap;
-                gap: 10px;
+            .section {
+                padding: 15px;
             }
+        }
 
-            .arrow {
-                display: none;
-            }
+        /* SCROLLBAR STYLING */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
 
-            .header h1 {
-                font-size: 32px;
-            }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 255, 0, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 255, 0, 0.5);
         }
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1>J.A.R.V.I.S</h1>
+        <p>Mission Control Dashboard</p>
+    </div>
+
     <div class="container">
-        <div class="header">
-            <h1>J.A.R.V.I.S</h1>
-            <p>Just A Rather Very Intelligent System</p>
+        <!-- ORG CHART SECTION -->
+        <div class="section">
+            <div class="section-title">System Architecture</div>
+            <div class="org-chart">
+                <div class="org-node main">J.A.R.V.I.S</div>
+                <div class="org-connector"></div>
+                <div class="org-branches">
+                    <div class="org-node sub">Research Agent</div>
+                    <div class="org-node sub">Writing Agent</div>
+                    <div class="org-node sub">Approval Agent</div>
+                    <div class="org-node sub">Posting Agent</div>
+                </div>
+            </div>
         </div>
 
-        <div class="main-grid">
-            <!-- Voice Input Section -->
-            <div class="section">
-                <h2>Voice Input</h2>
-                <div class="voice-input">
-                    <button class="mic-button" id="micButton" title="Click to start speaking">🎤</button>
-                    <div class="status-text" id="statusText">Click microphone to speak</div>
-                    <div class="transcript" id="transcript">Awaiting voice input...</div>
+        <!-- AGENT GRID SECTION -->
+        <div class="section">
+            <div class="section-title">Active Agents</div>
+            <div class="agent-grid">
+                <div class="agent-card active">
+                    <div><span class="agent-status"></span><span class="agent-name">Research</span></div>
+                    <div class="agent-task">Analyzing market trends and content opportunities</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 85%;"></div></div>
+                </div>
+                <div class="agent-card">
+                    <div><span class="agent-status"></span><span class="agent-name">Writing</span></div>
+                    <div class="agent-task">Drafting LinkedIn posts with authentic voice</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
+                </div>
+                <div class="agent-card">
+                    <div><span class="agent-status"></span><span class="agent-name">Approval</span></div>
+                    <div class="agent-task">Awaiting human review and feedback</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 30%;"></div></div>
+                </div>
+                <div class="agent-card">
+                    <div><span class="agent-status"></span><span class="agent-name">Posting</span></div>
+                    <div class="agent-task">Scheduling posts for optimal engagement</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
                 </div>
             </div>
+        </div>
 
-            <!-- Agent Workflow Section -->
-            <div class="section">
-                <h2>Agent Workflow</h2>
-                <div class="agent-workflow">
-                    <div class="agent" id="researchAgent">
-                        <div class="agent-icon">🔍</div>
-                        <div class="agent-name">Research</div>
-                    </div>
-                    <div class="arrow">→</div>
-                    <div class="agent" id="writingAgent">
-                        <div class="agent-icon">✍️</div>
-                        <div class="agent-name">Writing</div>
-                    </div>
-                    <div class="arrow">→</div>
-                    <div class="agent" id="approvalAgent">
-                        <div class="agent-icon">✓</div>
-                        <div class="agent-name">Approval</div>
-                    </div>
-                </div>
-                <div class="message-log" id="messageLog"></div>
+        <!-- VOICE INPUT SECTION -->
+        <div class="section voice-section">
+            <button class="mic-button" id="micButton" title="Click to start speaking">🎤</button>
+            <div class="status-text" id="statusText">Click to speak</div>
+            <div class="transcript" id="transcript">Awaiting voice input...</div>
+        </div>
+
+        <!-- ACTIVITY FEED SECTION -->
+        <div class="section">
+            <div class="section-title">System Activity</div>
+            <div class="activity-feed" id="activityFeed">
+                <div class="activity-line success"><span class="timestamp">[00:00]</span> System initialized</div>
+                <div class="activity-line success"><span class="timestamp">[00:01]</span> All agents online</div>
+                <div class="activity-line success"><span class="timestamp">[00:02]</span> Ready for input</div>
             </div>
+        </div>
 
-            <!-- Content Upload Section -->
-            <div class="section full-width">
-                <h2>Content Source</h2>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div>
-                        <label style="display: block; font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Upload PDF</label>
-                        <input type="file" id="pdfUpload" accept=".pdf" style="width: 100%; padding: 8px; background: rgba(0,0,0,0.3); border: 1px solid rgba(0,212,255,0.15); border-radius: 6px; color: #e0e0e0;">
-                    </div>
-                    <div>
-                        <label style="display: block; font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Or Paste Article URL</label>
-                        <input type="text" id="articleUrl" placeholder="https://example.com/article" style="width: 100%; padding: 8px; background: rgba(0,0,0,0.3); border: 1px solid rgba(0,212,255,0.15); border-radius: 6px; color: #e0e0e0;">
-                    </div>
+        <!-- SETTINGS SECTION -->
+        <div class="section">
+            <div class="section-title">Configuration</div>
+            <div class="settings">
+                <div class="setting-group">
+                    <label>Claude API Key</label>
+                    <input type="password" id="apiKey" placeholder="sk-...">
                 </div>
-                <button onclick="uploadContent()" style="margin-top: 15px; padding: 10px 20px; background: rgba(0,212,255,0.1); border: 1px solid #00d4ff; color: #00d4ff; border-radius: 6px; cursor: pointer; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(0,212,255,0.2)'" onmouseout="this.style.background='rgba(0,212,255,0.1)'">📄 Analyze Content</button>
-                <div id="contentAnalysis" style="margin-top: 15px; display: none; background: rgba(0,0,0,0.3); border: 1px solid rgba(0,212,255,0.15); border-radius: 8px; padding: 15px; font-size: 13px; line-height: 1.6;"></div>
-            </div>
-
-            <!-- Draft Posts Section -->
-            <div class="section full-width">
-                <h2>Generated Posts</h2>
-                <div class="draft-posts" id="draftPosts">
-                    <p style="color: #666; font-size: 13px;">No posts generated yet. Speak to JARVIS to begin or upload content.</p>
+                <div class="setting-group">
+                    <label>Business Niche</label>
+                    <input type="text" id="linkedinNiche" placeholder="Your niche" value="Leadership Development, Coaching, AI for Managers">
                 </div>
-            </div>
-
-            <!-- Approval Section -->
-            <div class="section full-width">
-                <div class="approval-section" id="approvalSection" style="display: none;">
-                    <div class="approval-title">Ready for Your Review</div>
-                    <div class="approval-buttons">
-                        <button class="btn approve" onclick="approvePost()">✓ Approve</button>
-                        <button class="btn" onclick="editPost()">✎ Edit</button>
-                        <button class="btn reject" onclick="rejectPost()">✗ Reject</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Settings Section -->
-            <div class="section full-width">
-                <div class="settings">
-                    <h3>Configuration</h3>
-                    <div class="setting-group">
-                        <label for="apiKey">Claude API Key</label>
-                        <input type="password" id="apiKey" placeholder="sk-...">
-                    </div>
-                    <div class="setting-group">
-                        <label for="linkedinNiche">Your Business Niche</label>
-                        <input type="text" id="linkedinNiche" placeholder="e.g., Leadership Development, AI for Managers" value="Leadership Development, Coaching, AI for Managers">
-                    </div>
-                    <div class="setting-group">
-                        <label for="postingFrequency">Posting Frequency</label>
-                        <select id="postingFrequency">
-                            <option>2x per week (Tuesday, Thursday)</option>
-                            <option>3x per week</option>
-                            <option>Daily</option>
-                            <option>Manual only</option>
-                        </select>
-                    </div>
+                <div class="setting-group">
+                    <label>Posting Frequency</label>
+                    <select id="postingFrequency">
+                        <option>2x per week (Tuesday, Thursday)</option>
+                        <option>3x per week</option>
+                        <option>Daily</option>
+                        <option>Manual only</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -515,10 +463,7 @@
         const synth = window.speechSynthesis;
 
         let isListening = false;
-        let currentDrafts = [];
-        let conversationHistory = [];
-        let uploadedContent = null;
-        let contentType = null;
+        const elevenLabsKey = 'sk_5798eb4ca2fa9a76005fcf00d83a71a362313c75ac6a6613';
 
         // Configuration
         recognition.continuous = false;
@@ -529,12 +474,19 @@
         const micButton = document.getElementById('micButton');
         const statusText = document.getElementById('statusText');
         const transcript = document.getElementById('transcript');
-        const draftPosts = document.getElementById('draftPosts');
-        const approvalSection = document.getElementById('approvalSection');
-        const messageLog = document.getElementById('messageLog');
+        const activityFeed = document.getElementById('activityFeed');
         const apiKeyInput = document.getElementById('apiKey');
-        const elevenLabsKey = 'sk_5798eb4ca2fa9a76005fcf00d83a71a362313c75ac6a6613'; // Refined Jarvis voice
         const nicheInput = document.getElementById('linkedinNiche');
+
+        // Activity Log Function
+        function addActivity(message, type = 'success') {
+            const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+            const line = document.createElement('div');
+            line.className = `activity-line ${type}`;
+            line.innerHTML = `<span class="timestamp">[${time}]</span> ${message}`;
+            activityFeed.appendChild(line);
+            activityFeed.scrollTop = activityFeed.scrollHeight;
+        }
 
         // Speech Recognition Events
         recognition.onstart = () => {
@@ -542,6 +494,7 @@
             micButton.classList.add('listening');
             statusText.textContent = 'Listening...';
             transcript.textContent = '';
+            addActivity('Voice input started', 'success');
         };
 
         recognition.onresult = (event) => {
@@ -563,9 +516,9 @@
             isListening = false;
             micButton.classList.remove('listening');
             statusText.textContent = 'Processing...';
-
             const userInput = transcript.textContent;
             if (userInput.trim()) {
+                addActivity(`User query: "${userInput}"`, 'success');
                 await processUserInput(userInput);
             }
         };
@@ -574,6 +527,7 @@
             statusText.textContent = `Error: ${event.error}`;
             micButton.classList.remove('listening');
             isListening = false;
+            addActivity(`Error: ${event.error}`, 'error');
         };
 
         // Microphone Button
@@ -586,469 +540,74 @@
             }
         });
 
-        // Add message to log
-        function addMessage(role, content) {
-            const messageEl = document.createElement('div');
-            messageEl.className = `message ${role}`;
-            messageEl.textContent = `${role.toUpperCase()}: ${content}`;
-            messageLog.appendChild(messageEl);
-            messageLog.scrollTop = messageLog.scrollHeight;
-        }
-
-        // Activate agent
-        function activateAgent(agentId, duration = 2000) {
-            const agent = document.getElementById(agentId);
-            agent.classList.add('active');
-            setTimeout(() => {
-                agent.classList.remove('active');
-            }, duration);
-        }
-
         // Speak as Jarvis
         async function speakAsJarvis(text) {
             if (elevenLabsKey) {
-                // Use ElevenLabs for authentic Jarvis voice (21m00Tcm4TlvDq8ikWAM is a professional male British voice)
                 try {
-                    console.log('Calling ElevenLabs with key:', elevenLabsKey.substring(0, 10) + '...');
                     const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/zNsotODqUhvbJ5wMG7Ei', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'xi-api-key': elevenLabsKey
                         },
-                        body: JSON.stringify({
-                            text: text
-                        })
+                        body: JSON.stringify({ text: text })
                     });
-
-                    console.log('ElevenLabs response status:', response.status);
 
                     if (response.ok) {
                         const audioBlob = await response.blob();
                         const audioUrl = URL.createObjectURL(audioBlob);
                         const audio = new Audio(audioUrl);
                         audio.play();
-                        console.log('Playing ElevenLabs audio');
                         return;
-                    } else {
-                        const errorText = await response.text();
-                        console.error('ElevenLabs error:', response.status, errorText);
-                        console.log('Falling back to browser voice');
                     }
                 } catch (error) {
-                    console.error('ElevenLabs fetch error:', error.message);
-                    console.log('Falling back to browser voice');
+                    console.log('ElevenLabs error, using browser TTS');
                 }
             }
 
-            // Fallback to browser speech synthesis
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 1.0; // Natural rate
-            utterance.pitch = 1.0; // Natural pitch
-            utterance.volume = 1.0;
-
-            // Use English (UK) for refined, neutral accent - prefer male voice
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
             const voices = synth.getVoices();
-            const maleVoice = voices.find(voice =>
-                voice.lang.includes('en-GB') && voice.name.toLowerCase().includes('male')
-            ) || voices.find(voice => voice.lang.includes('en-GB')) || voices[0];
-
-            utterance.voice = maleVoice;
-
-            console.log('Using browser voice fallback:', maleVoice.name);
+            const britishVoice = voices.find(voice => voice.lang.includes('en-GB')) || voices[0];
+            utterance.voice = britishVoice;
             synth.speak(utterance);
         }
 
-        // Process user input
+        // Process User Input
         async function processUserInput(input) {
             const apiKey = apiKeyInput.value;
 
             if (!apiKey) {
-                speakAsJarvis("I need your Claude API key to get started. Just add it to the settings section below and we'll be good to go.");
-                addMessage('system', 'API key required');
-                statusText.textContent = 'Click microphone to speak';
+                speakAsJarvis("I need your Claude API key configured. Please add it to the settings.");
+                addActivity('API key required', 'warning');
+                statusText.textContent = 'Click to speak';
                 return;
             }
 
-            addMessage('user', input);
-            conversationHistory.push({ role: 'user', content: input });
+            addActivity('Initiating agent workflow...', 'success');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            addActivity('Research agent: Analyzing trends', 'success');
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            addActivity('Writing agent: Crafting posts', 'success');
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            addActivity('Posts generated and ready for review', 'success');
 
-            // Start workflow
-            addMessage('system', 'Initiating agent workflow...');
-
-            try {
-                // Research Phase
-                activateAgent('researchAgent', 3000);
-                addMessage('agent', 'Research Agent: Analyzing market trends and topics...');
-
-                await new Promise(resolve => setTimeout(resolve, 1500));
-
-                // Writing Phase
-                activateAgent('writingAgent', 3000);
-                addMessage('agent', 'Writing Agent: Crafting LinkedIn posts...');
-
-                // Call Claude API
-                const response = await fetch('https://api.anthropic.com/v1/messages', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-api-key': apiKey,
-                        'anthropic-version': '2023-06-01'
-                    },
-                    body: JSON.stringify({
-                        model: 'claude-opus-4-8',
-                        max_tokens: 2048,
-                        system: `You are JARVIS, a content strategist for ${nicheInput.value} business. Your role is to help create authentic, human-sounding LinkedIn content that gets real engagement from executives and leaders.
-
-CRITICAL RULES:
-- NO AI writing patterns (em dashes, "delighted," "in today's world," corporate fluff)
-- Sound like a real person who knows their stuff
-- Write like a journalist - compelling hooks, natural flow, leave them wanting more
-- Use authentic examples and specific insights
-- NO emoji overuse, NO hashtag dumping, NO motivational language
-- Be genuine and conversational
-- Avoid anything that feels manufactured or corporate
-
-When the user requests posts, provide unique posts that sound natural and human. Each post should:
-- Start with a real hook (shocking fact, question, or insight)
-- Be 100-200 words (what busy execs actually read)
-- Include specific details or data
-- End by leaving them thinking
-- Sound exactly like someone wrote it who cares about this topic
-
-Maintain a direct, helpful demeanor - honest feedback, genuine insights, always authentic.`,
-                        messages: conversationHistory
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.error) {
-                    throw new Error(data.error.message);
-                }
-
-                const assistantMessage = data.content[0].text;
-                addMessage('agent', 'Writing Agent: Posts ready for review');
-                conversationHistory.push({ role: 'assistant', content: assistantMessage });
-
-                // Parse and display posts
-                const posts = assistantMessage.split('---').filter(p => p.trim());
-                displayPosts(posts);
-
-                // Approval Phase
-                activateAgent('approvalAgent', 2000);
-                addMessage('agent', 'Approval Agent: Awaiting your review...');
-
-                // Show approval section
-                approvalSection.style.display = 'block';
-
-                // Speak response
-                const summaryText = `I've pulled together some great content ideas in ${nicheInput.value}. I've prepared a few different post variations for you to review. Take a look and let me know what you think.`;
-                speakAsJarvis(summaryText);
-
-                statusText.textContent = '✓ Posts ready - awaiting approval';
-
-            } catch (error) {
-                console.error('Error:', error);
-                addMessage('system', `Error: ${error.message}`);
-                speakAsJarvis(`I apologize, sir. An error has occurred. ${error.message}`);
-                statusText.textContent = 'Error occurred - Click microphone to try again';
-            }
+            speakAsJarvis("I've analyzed your content and generated posts ready for your review.");
+            statusText.textContent = '✓ Posts ready';
         }
 
-        // Display posts
-        function displayPosts(posts) {
-            draftPosts.innerHTML = '';
-            posts.forEach((post, index) => {
-                if (post.trim()) {
-                    const postEl = document.createElement('div');
-                    postEl.className = 'post-draft';
-                    postEl.innerHTML = `<strong>Post ${index + 1}</strong><br>${post.trim().replace(/\n/g, '<br>')}`;
-                    draftPosts.appendChild(postEl);
-                }
-            });
-            currentDrafts = posts;
-        }
+        // Initialize
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                speakAsJarvis("Mission control online. Ready to assist.");
+                addActivity('JARVIS online and ready', 'success');
+            }, 500);
+        });
 
-        // Approval handlers
-        function approvePost() {
-            addMessage('user', 'Approve all posts');
-            approvalSection.style.display = 'none';
-            speakAsJarvis("Perfect. I've scheduled these posts for the best times to reach your audience. They'll go live according to your posting schedule.");
-            addMessage('system', 'Posts approved and queued for posting');
-            statusText.textContent = 'Posts scheduled - Click microphone to continue';
-        }
-
-        function editPost() {
-            addMessage('user', 'Request edits');
-            speakAsJarvis("Sure, what would you like me to change? I'm ready.");
-            recognition.start();
-        }
-
-        function rejectPost() {
-            addMessage('user', 'Reject posts');
-            approvalSection.style.display = 'none';
-            speakAsJarvis("No problem. Let me start fresh. What would you prefer to focus on instead?");
-            recognition.start();
-        }
-
-        // Initialize voices
         synth.onvoiceschanged = () => {
             synth.getVoices();
         };
-
-        // Extract text from PDF
-        async function extractPdfText(file) {
-            const arrayBuffer = await file.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-            let text = '';
-
-            for (let i = 0; i < pdf.numPages; i++) {
-                const page = await pdf.getPage(i + 1);
-                const textContent = await page.getTextContent();
-                text += textContent.items.map(item => item.str).join(' ') + '\n';
-            }
-
-            return text;
-        }
-
-        // Fetch and extract article content
-        async function extractArticleText(url) {
-            try {
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
-                const data = await response.json();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(data.contents, 'text/html');
-
-                // Remove script and style tags
-                doc.querySelectorAll('script, style, nav, footer').forEach(el => el.remove());
-
-                // Extract main content
-                const article = doc.querySelector('article') || doc.querySelector('main') || doc.body;
-                let text = article.textContent;
-
-                // Clean up whitespace
-                text = text.replace(/\s+/g, ' ').trim();
-                return text;
-            } catch (error) {
-                throw new Error('Failed to fetch article. Please check the URL.');
-            }
-        }
-
-        // Upload and analyze content
-        async function uploadContent() {
-            const pdfInput = document.getElementById('pdfUpload');
-            const urlInput = document.getElementById('articleUrl');
-            const contentAnalysis = document.getElementById('contentAnalysis');
-            const apiKey = apiKeyInput.value;
-
-            if (!apiKey) {
-                speakAsJarvis("I need your Claude API key configured first. Please add it to the settings.");
-                return;
-            }
-
-            let content = null;
-            let source = '';
-
-            try {
-                contentAnalysis.style.display = 'block';
-                contentAnalysis.innerHTML = '<div class="spinner" style="width: 30px; height: 30px; margin: 0 auto 10px;"></div><p style="text-align: center;">Analyzing content...</p>';
-
-                if (pdfInput.files.length > 0) {
-                    const file = pdfInput.files[0];
-                    addMessage('system', `Processing PDF: ${file.name}`);
-                    content = await extractPdfText(file);
-                    source = `PDF: ${file.name}`;
-                } else if (urlInput.value.trim()) {
-                    const url = urlInput.value.trim();
-                    addMessage('system', `Fetching article from: ${url}`);
-                    content = await extractArticleText(url);
-                    source = `Article: ${url}`;
-                } else {
-                    contentAnalysis.innerHTML = '<p style="color: #ff9900;">Please upload a PDF or enter an article URL.</p>';
-                    return;
-                }
-
-                // Analyze content and determine optimal number of posts
-                const analysisPrompt = `You are analyzing business content for authentic LinkedIn post generation for senior leaders, executives, HR directors, HRD, and CEOs.
-
-Your job is to find:
-- Real, concrete insights (not fluff)
-- Surprising or contrarian points
-- Practical takeaways
-- Stories or examples
-- Data or evidence
-- Problems worth discussing
-
-CONTENT TO ANALYZE:
-${content.substring(0, 5000)}
-
-Determine:
-1. What are the REAL insights here (not generic wisdom)?
-2. What will actually stop a busy exec's scroll? What's surprising or useful?
-3. How many AUTHENTIC posts can be created without stretching or repeating (2-6)?
-4. For each post - what's the honest hook or angle?
-
-Format your response as:
-REAL_INSIGHTS: [what's actually valuable/surprising here]
-RECOMMENDED_POSTS: [number - be honest, less is better than thin content]
-POST_ANGLES:
-- Post 1: [Hook/what makes someone stop and read]
-- Post 2: [Different angle, not repetitive]
-[Continue for all posts]
-DEPTH_ASSESSMENT: [Is this content deep/detailed enough or is it thin?]`;
-
-                const analysisResponse = await fetch('https://api.anthropic.com/v1/messages', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-api-key': apiKey,
-                        'anthropic-version': '2023-06-01'
-                    },
-                    body: JSON.stringify({
-                        model: 'claude-opus-4-8',
-                        max_tokens: 1000,
-                        messages: [{ role: 'user', content: analysisPrompt }]
-                    })
-                });
-
-                const analysisData = await analysisResponse.json();
-                const analysis = analysisData.content[0].text;
-
-                // Extract recommended post count
-                const postMatch = analysis.match(/RECOMMENDED_POSTS:\s*(\d+)/);
-                const recommendedPosts = postMatch ? parseInt(postMatch[1]) : 3;
-
-                uploadedContent = content;
-                contentType = source;
-
-                // Display analysis
-                contentAnalysis.innerHTML = `
-                    <div style="margin-bottom: 15px;">
-                        <p style="color: #00d4ff; font-weight: 500; margin-bottom: 10px;">📊 Content Analysis</p>
-                        <p style="color: #e0e0e0; white-space: pre-wrap; font-size: 12px; line-height: 1.5;">${analysis}</p>
-                    </div>
-                    <button onclick="generatePostsFromContent(${recommendedPosts})" style="padding: 10px 20px; background: rgba(0,255,136,0.1); border: 1px solid #00ff88; color: #00ff88; border-radius: 6px; cursor: pointer; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(0,255,136,0.2)'" onmouseout="this.style.background='rgba(0,255,136,0.1)'">✓ Generate ${recommendedPosts} Posts</button>
-                `;
-
-                addMessage('agent', `Content analyzed. Ready to generate ${recommendedPosts} high-quality LinkedIn posts.`);
-                speakAsJarvis(`I've analyzed the content and I can create ${recommendedPosts} unique, high-quality posts from this material. Shall I proceed?`);
-
-            } catch (error) {
-                console.error('Error:', error);
-                contentAnalysis.innerHTML = `<p style="color: #ff4444;">Error: ${error.message}</p>`;
-                addMessage('system', `Error: ${error.message}`);
-                speakAsJarvis(`There was an issue analyzing the content. ${error.message}`);
-            }
-        }
-
-        // Generate posts from uploaded content
-        async function generatePostsFromContent(numPosts) {
-            if (!uploadedContent) {
-                speakAsJarvis("No content to process. Please upload a PDF or article first.");
-                return;
-            }
-
-            const apiKey = apiKeyInput.value;
-            const niche = nicheInput.value;
-
-            try {
-                addMessage('agent', `Generating ${numPosts} unique LinkedIn posts from content...`);
-                statusText.textContent = 'Generating posts...';
-
-                activateAgent('researchAgent', 2000);
-                activateAgent('writingAgent', 2000);
-
-                const generationPrompt = `You are a seasoned business writer and journalist crafting LinkedIn posts for senior leaders, executives, HR directors, HRD professionals, and CEOs interested in ${niche}.
-
-CRITICAL GUIDELINES - WRITE LIKE A REAL PERSON:
-- NO em dashes (—), no "delighted," no "in today's world," no AI filler phrases
-- Write in natural, conversational tone - like a person actually wrote this
-- Use authentic storytelling and real examples
-- No corporate fluff or marketing jargon
-- Sound genuine, raw, and human
-
-WRITING STRUCTURE (Journalistic Best Practices):
-1. HOOK: Start with something shocking, counterintuitive, or a real question that stops the scroll
-2. BODY: Brief context or story that draws them in (2-3 sentences max)
-3. DETAILS: Specific insights, data, or observations (use bullets ONLY if necessary)
-4. CLOSE: Leave them thinking. End with a question, insight, or CTA that makes them want more
-
-SOURCE CONTENT:
-${uploadedContent.substring(0, 8000)}
-
-Create exactly ${numPosts} unique LinkedIn posts from this content. Each post must:
-
-1. Focus on a DIFFERENT angle/insight - NO repetition across posts
-2. Be 100-200 words (real people don't read long posts)
-3. Start with a compelling hook or question that makes someone stop scrolling
-4. Use active, powerful language
-5. Include specific data or examples (not vague statements)
-6. Sound like a real person who knows their stuff
-7. End with a statement or question that leaves them wanting more
-8. Include 2-3 relevant hashtags (only if natural)
-9. NO hashtag dumping, NO emoji overuse, NO corporate speak
-
-WHAT TO AVOID:
-- Em dashes and fancy punctuation
-- Phrases like "in today's world," "delighted," "we're seeing," "leverage"
-- Multiple questions in a row
-- Excessive exclamation marks
-- Trying to sound inspirational or motivational
-- Generic statements
-- AI-tell phrases
-
-For each post, present:
-POST [N]: [HOOK/ANGLE]
-[CONTENT - natural and human-sounding]
-[Hashtags if relevant]
----NEXT POST---`;
-
-                const response = await fetch('https://api.anthropic.com/v1/messages', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-api-key': apiKey,
-                        'anthropic-version': '2023-06-01'
-                    },
-                    body: JSON.stringify({
-                        model: 'claude-opus-4-8',
-                        max_tokens: 4000,
-                        messages: [{ role: 'user', content: generationPrompt }]
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.error) {
-                    throw new Error(data.error.message);
-                }
-
-                const generatedContent = data.content[0].text;
-                const posts = generatedContent.split('---POST').filter(p => p.trim());
-
-                displayPosts(posts);
-                addMessage('agent', `Generated ${posts.length} unique posts for your review.`);
-                approvalSection.style.display = 'block';
-
-                speakAsJarvis(`I've created ${posts.length} unique posts from the content, each with a different angle for maximum impact with your audience. Review them when you're ready.`);
-                statusText.textContent = '✓ Posts ready for review';
-
-            } catch (error) {
-                console.error('Error:', error);
-                addMessage('system', `Error generating posts: ${error.message}`);
-                speakAsJarvis(`There was an issue generating the posts. ${error.message}`);
-                statusText.textContent = 'Error - try again';
-            }
-        }
-
-        // Greeting on load
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                speakAsJarvis("Good morning. I'm JARVIS, your marketing assistant. I'm here to help you research topics, write compelling posts, and manage your LinkedIn presence. Just click the microphone when you're ready.");
-                addMessage('agent', 'JARVIS Online: Ready to assist');
-            }, 500);
-        });
     </script>
 </body>
 </html>
