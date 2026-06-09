@@ -460,24 +460,33 @@
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+            // Very slow pulse - this is the breathing of the entity
+            const breathePulse = Math.sin(entityTime * 0.02) * 0.5 + 0.5; // 0 to 1, very slow
+            const activePulse = isSpeaking ? Math.sin(entityTime * 0.15) * 0.5 + 0.5 : breathePulse; // Much faster when speaking
+
             // Draw organic flowing entity with multiple layers
             for (let layer = 0; layer < 4; layer++) {
                 const points = [];
                 const baseRadius = 40 + (layer * 35);
                 const segments = 120;
-                const layerAmplitude = isSpeaking ? 20 - layer * 4 : 12 - layer * 3;
 
-                // Create wavy organic points
+                // Amplitude varies dramatically based on speaking state
+                const restAmplitude = 3 - layer * 0.5; // Very subtle at rest
+                const speakingAmplitude = 25 - layer * 5; // Dramatic when speaking
+                const layerAmplitude = isSpeaking ? speakingAmplitude : restAmplitude;
+
+                // Create wavy organic points - RADIAL PULSING, not rotating
                 for (let i = 0; i <= segments; i++) {
                     const angle = (i / segments) * Math.PI * 2;
 
-                    // Multiple sine waves for organic feel
-                    const wave1 = Math.sin(entityTime * 0.8 + angle * 3 - layer * 0.4) * (layerAmplitude * 0.6);
-                    const wave2 = Math.sin(entityTime * 0.4 + angle * 2 + layer * 0.3) * (layerAmplitude * 0.4);
-                    const wave3 = Math.sin(entityTime * 1.2 + angle - layer * 0.2) * (layerAmplitude * 0.3);
+                    // Gentle radial pulsing - the whole layer expands and contracts
+                    const globalPulse = (isSpeaking ? activePulse : breathePulse) * layerAmplitude;
 
-                    const totalWave = wave1 + wave2 + wave3;
-                    const radius = baseRadius + totalWave;
+                    // Add very slight variation per point for organic feel
+                    const subtleWave = Math.sin(angle * 2) * (layerAmplitude * 0.2);
+
+                    const totalPulse = globalPulse + subtleWave;
+                    const radius = baseRadius + totalPulse;
 
                     const x = centerX + Math.cos(angle) * radius;
                     const y = centerY + Math.sin(angle) * radius;
@@ -490,7 +499,6 @@
 
                 // Use quadratic curves for smooth organic flow
                 for (let p = 1; p < points.length; p++) {
-                    const prev = points[p - 1];
                     const curr = points[p];
                     const next = points[(p + 1) % points.length];
 
@@ -502,12 +510,8 @@
                 // Close path smoothly
                 ctx.quadraticCurveTo(points[points.length - 1].x, points[points.length - 1].y, points[0].x, points[0].y);
 
-                const opacity = isSpeaking ? 0.75 - layer * 0.15 : 0.4 - layer * 0.08;
-
-                // Fill with subtle gradient
-                const gradient = ctx.createRadialGradient(centerX, centerY, baseRadius - 20, centerX, centerY, baseRadius + 30);
-                gradient.addColorStop(0, `rgba(0, 255, 255, ${opacity * 0.5})`);
-                gradient.addColorStop(1, `rgba(0, 255, 255, ${opacity})`);
+                // Opacity responds to speaking
+                const opacity = isSpeaking ? 0.8 - layer * 0.15 : 0.35 - layer * 0.08;
 
                 ctx.strokeStyle = `rgba(0, 255, 255, ${opacity})`;
                 ctx.lineWidth = 2;
@@ -515,24 +519,26 @@
             }
 
             // Inner organic core - the "heart" of the entity
-            const coreWave1 = Math.sin(entityTime * 1.2) * 8;
-            const coreWave2 = Math.sin(entityTime * 0.6 + 1) * 5;
-            const coreSize = 20 + coreWave1 + coreWave2;
+            const coreRestSize = 15;
+            const coreSpeakingSize = 25;
+            const corePulse = isSpeaking ? activePulse : breathePulse;
+            const coreSize = coreRestSize + (corePulse * (coreSpeakingSize - coreRestSize));
 
             // Draw core with glow
             ctx.beginPath();
             ctx.arc(centerX, centerY, coreSize, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(0, 255, 255, ${isSpeaking ? 0.5 : 0.25})`;
+            ctx.fillStyle = `rgba(0, 255, 255, ${isSpeaking ? 0.6 : 0.2})`;
             ctx.fill();
 
             // Core outline
             ctx.beginPath();
             ctx.arc(centerX, centerY, coreSize + 3, 0, Math.PI * 2);
-            ctx.strokeStyle = `rgba(0, 255, 255, ${isSpeaking ? 0.9 : 0.6})`;
+            ctx.strokeStyle = `rgba(0, 255, 255, ${isSpeaking ? 1.0 : 0.5})`;
             ctx.lineWidth = 1.5;
             ctx.stroke();
 
-            entityTime += isSpeaking ? 0.12 : 0.04;
+            // Very slow time increment - barely moves at rest
+            entityTime += 1; // Increment every frame, but the sin wave is very slow
             requestAnimationFrame(drawEntity);
         }
 
