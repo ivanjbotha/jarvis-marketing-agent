@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JARVIS - Mission Control</title>
+    <title>J.A.R.V.I.S - Command Center</title>
     <style>
         * {
             margin: 0;
@@ -12,261 +12,247 @@
         }
 
         body {
-            font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #0a0f1e 0%, #1a1f2e 100%);
-            color: #e0e0e0;
+            font-family: 'Courier New', 'Roboto Mono', monospace;
+            background: radial-gradient(circle at center, #0a0f1e 0%, #050810 100%);
+            color: #00ffff;
             min-height: 100vh;
             overflow: hidden;
         }
 
-        .container {
+        .main-container {
+            width: 100vw;
+            height: 100vh;
             display: grid;
-            grid-template-columns: 320px 1fr 320px;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto 1fr 1fr;
             gap: 20px;
             padding: 20px;
-            height: 100vh;
+            position: relative;
         }
 
-        /* HEADER - Spans all columns */
+        /* HEADER - Spans top */
         .header {
             grid-column: 1 / -1;
             text-align: center;
-            padding: 15px 0;
             border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+            padding-bottom: 15px;
         }
 
         .header h1 {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 700;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
             color: #00ffff;
-            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
         }
 
         .header p {
-            font-size: 11px;
-            letter-spacing: 1px;
+            font-size: 10px;
+            letter-spacing: 2px;
             color: #00ffff;
-            opacity: 0.5;
+            opacity: 0.4;
             text-transform: uppercase;
             margin-top: 5px;
         }
 
         /* PANELS */
         .panel {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(0, 255, 255, 0.15);
-            border-radius: 8px;
+            border-radius: 4px;
             padding: 20px;
             backdrop-filter: blur(10px);
-            display: flex;
-            flex-direction: column;
             overflow-y: auto;
-            gap: 15px;
+            font-size: 11px;
+            line-height: 1.6;
         }
 
-        .panel-title {
-            font-size: 12px;
-            font-weight: 700;
+        .panel-label {
+            font-size: 9px;
+            letter-spacing: 2px;
             color: #00ffff;
+            opacity: 0.6;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             border-bottom: 1px solid rgba(0, 255, 255, 0.1);
             padding-bottom: 10px;
         }
 
-        /* AGENT CARDS */
-        .agent-card {
+        /* AGENT CARD */
+        .agent-item {
             background: rgba(0, 255, 255, 0.03);
-            border: 1px solid rgba(0, 255, 255, 0.15);
-            border-radius: 6px;
+            border-left: 2px solid rgba(0, 255, 255, 0.3);
             padding: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            margin-bottom: 10px;
+            border-radius: 2px;
         }
 
-        .agent-card:hover {
-            border-color: rgba(0, 255, 255, 0.4);
+        .agent-item.active {
+            border-left-color: #00ffff;
             background: rgba(0, 255, 255, 0.08);
-        }
-
-        .agent-card.active {
-            border-color: #00ffff;
-            background: rgba(0, 255, 255, 0.1);
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
-        }
-
-        .agent-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .agent-status {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #00ff88;
-            box-shadow: 0 0 8px #00ff88;
-        }
-
-        .agent-name {
-            font-size: 13px;
-            font-weight: 600;
             color: #00ffff;
         }
 
-        .agent-task {
-            font-size: 11px;
-            color: #888;
-            margin-bottom: 5px;
+        .agent-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #00ffff;
         }
 
-        .task-progress {
+        .agent-status {
+            font-size: 10px;
+            color: #666;
+        }
+
+        .progress-bar {
             width: 100%;
-            height: 3px;
+            height: 2px;
             background: rgba(0, 255, 255, 0.1);
-            border-radius: 2px;
+            margin-top: 6px;
+            border-radius: 1px;
             overflow: hidden;
         }
 
-        .task-progress-bar {
+        .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #00ffff, #00ff88);
-            box-shadow: 0 0 8px #00ffff;
+            box-shadow: 0 0 6px #00ffff;
         }
 
-        /* CENTER - CONTROL */
-        .center-section {
+        /* CENTER IRIS */
+        .iris-section {
             grid-column: 2;
+            grid-row: 2 / 4;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 30px;
+            gap: 20px;
         }
 
         .iris-container {
             position: relative;
-            width: 380px;
-            height: 380px;
+            width: 320px;
+            height: 320px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        #irisCanvas {
+        #waveCanvas {
             width: 100%;
             height: 100%;
+            filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.3));
         }
 
-        .control-button {
+        .mic-button {
             position: absolute;
-            width: 100px;
-            height: 100px;
+            width: 90px;
+            height: 90px;
             border: 2px solid #00ffff;
             border-radius: 50%;
-            background: rgba(0, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.7);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 44px;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.1);
+            font-size: 40px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2), inset 0 0 15px rgba(0, 255, 255, 0.05);
             transition: all 0.3s ease;
             z-index: 10;
         }
 
-        .control-button:hover {
-            box-shadow: 0 0 50px rgba(0, 255, 255, 0.5), inset 0 0 30px rgba(0, 255, 255, 0.2);
+        .mic-button:hover {
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.4), inset 0 0 20px rgba(0, 255, 255, 0.1);
             transform: scale(1.05);
         }
 
-        .control-button.listening {
+        .mic-button.listening {
             border-color: #ff4444;
-            background: rgba(255, 68, 68, 0.1);
-            box-shadow: 0 0 50px rgba(255, 68, 68, 0.5), inset 0 0 30px rgba(255, 68, 68, 0.1);
+            box-shadow: 0 0 50px rgba(255, 68, 68, 0.5), inset 0 0 20px rgba(255, 68, 68, 0.1);
         }
 
-        .status-display {
-            text-align: center;
-            font-size: 12px;
-            color: #00ffff;
-            text-transform: uppercase;
+        .status {
+            font-size: 10px;
             letter-spacing: 1px;
+            text-transform: uppercase;
+            text-align: center;
+            color: #00ffff;
         }
 
-        .conversation {
+        /* CONVERSATION */
+        .conversation-box {
             width: 100%;
-            max-width: 600px;
             max-height: 200px;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(0, 255, 255, 0.1);
-            border-radius: 6px;
-            padding: 15px;
+            border-radius: 2px;
+            padding: 12px;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-        }
-
-        .message {
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 11px;
-            line-height: 1.4;
-        }
-
-        .message.user {
-            background: rgba(0, 255, 255, 0.1);
-            color: #00ffff;
-            border-left: 2px solid #00ffff;
-            margin-left: auto;
-            max-width: 80%;
-        }
-
-        .message.jarvis {
-            background: rgba(0, 200, 255, 0.05);
-            color: #88ddff;
-            border-left: 2px solid #0088ff;
-            margin-right: auto;
-            max-width: 80%;
-        }
-
-        .message.system {
-            background: rgba(255, 170, 0, 0.05);
-            color: #ffaa00;
-            text-align: center;
+            gap: 8px;
             font-size: 10px;
         }
 
-        /* ACTIVITY FEED */
-        .activity-feed {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            font-size: 11px;
+        .chat-msg {
+            padding: 6px 8px;
+            border-radius: 2px;
         }
 
-        .activity-item {
-            padding: 10px;
-            background: rgba(0, 255, 255, 0.05);
-            border-left: 2px solid rgba(0, 255, 255, 0.3);
-            border-radius: 4px;
+        .chat-msg.user {
+            background: rgba(0, 255, 255, 0.1);
+            border-left: 2px solid #00ffff;
+            color: #00ffff;
+            text-align: right;
+        }
+
+        .chat-msg.system {
+            background: rgba(255, 170, 0, 0.05);
+            border-left: 2px solid #ffaa00;
+            color: #ffaa00;
+            text-align: center;
+        }
+
+        .chat-msg.jarvis {
+            background: rgba(0, 200, 255, 0.05);
+            border-left: 2px solid #0088ff;
+            color: #88ddff;
+        }
+
+        /* TOP LEFT - AGENTS */
+        .top-left {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        /* TOP RIGHT - SYSTEM */
+        .top-right {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        /* BOTTOM LEFT - NETWORK */
+        .bottom-left {
+            grid-column: 1;
+            grid-row: 3;
+        }
+
+        /* BOTTOM RIGHT - ACTIVITY */
+        .bottom-right {
+            grid-column: 3;
+            grid-row: 3;
+        }
+
+        .activity-line {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.05);
+            font-size: 10px;
             color: #00ffff;
         }
 
-        .activity-item.collaboration {
-            border-left-color: #00ff88;
-            color: #00ff88;
-        }
-
-        .activity-item.handoff {
-            border-left-color: #ffaa00;
-            color: #ffaa00;
+        .activity-line:last-child {
+            border-bottom: none;
         }
 
         .timestamp {
@@ -274,150 +260,171 @@
             font-size: 9px;
         }
 
+        .agent-handoff {
+            color: #00ff88;
+        }
+
+        .agent-collaboration {
+            color: #00ddff;
+        }
+
         /* SCROLLBAR */
         ::-webkit-scrollbar {
-            width: 6px;
+            width: 4px;
         }
 
         ::-webkit-scrollbar-track {
-            background: rgba(0, 255, 255, 0.05);
+            background: transparent;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: rgba(0, 255, 255, 0.3);
-            border-radius: 3px;
+            background: rgba(0, 255, 255, 0.2);
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 255, 255, 0.5);
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 1400px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-
-            .iris-container {
-                width: 300px;
-                height: 300px;
-            }
+            background: rgba(0, 255, 255, 0.4);
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="main-container">
         <!-- HEADER -->
         <div class="header">
-            <h1>⚡ J.A.R.V.I.S ⚡</h1>
-            <p>AI Team Command Center</p>
+            <h1>J.A.R.V.I.S</h1>
+            <p>Command Center - Operational Status: Online</p>
         </div>
 
-        <!-- LEFT PANEL - AGENTS & TASKS -->
-        <div class="panel">
-            <div class="panel-title">🤖 Active Agents</div>
+        <!-- TOP LEFT - ACTIVE AGENTS -->
+        <div class="panel top-left">
+            <div class="panel-label">Active Agents</div>
 
-            <div class="agent-card active">
-                <div class="agent-header">
-                    <div class="agent-status"></div>
-                    <div class="agent-name">Research</div>
-                </div>
-                <div class="agent-task">Analyzing market trends...</div>
-                <div class="task-progress">
-                    <div class="task-progress-bar" style="width: 75%;"></div>
+            <div class="agent-item active">
+                <div class="agent-name">Research Division</div>
+                <div class="agent-status">Analyzing market data...</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 75%;"></div>
                 </div>
             </div>
 
-            <div class="agent-card">
-                <div class="agent-header">
-                    <div class="agent-status"></div>
-                    <div class="agent-name">Writing</div>
-                </div>
-                <div class="agent-task">Drafting posts...</div>
-                <div class="task-progress">
-                    <div class="task-progress-bar" style="width: 45%;"></div>
+            <div class="agent-item active">
+                <div class="agent-name">Content Writer</div>
+                <div class="agent-status">Drafting variations...</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 45%;"></div>
                 </div>
             </div>
 
-            <div class="agent-card">
-                <div class="agent-header">
-                    <div class="agent-status"></div>
-                    <div class="agent-name">Approval</div>
-                </div>
-                <div class="agent-task">Awaiting input...</div>
-                <div class="task-progress">
-                    <div class="task-progress-bar" style="width: 20%;"></div>
+            <div class="agent-item">
+                <div class="agent-name">Review Agent</div>
+                <div class="agent-status">Awaiting input...</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 20%;"></div>
                 </div>
             </div>
 
-            <div class="agent-card">
-                <div class="agent-header">
-                    <div class="agent-status"></div>
-                    <div class="agent-name">Posting</div>
+            <div class="agent-item">
+                <div class="agent-name">Deployment Module</div>
+                <div class="agent-status">Ready for schedule...</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%;"></div>
                 </div>
-                <div class="agent-task">Scheduled for later...</div>
-                <div class="task-progress">
-                    <div class="task-progress-bar" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <!-- TOP RIGHT - SYSTEM STATUS -->
+        <div class="panel top-right">
+            <div class="panel-label">System Status</div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 10px;">
+                <div>
+                    <div style="color: #666; margin-bottom: 2px;">CPU</div>
+                    <div style="color: #00ffff; font-weight: 600;">34%</div>
+                </div>
+                <div>
+                    <div style="color: #666; margin-bottom: 2px;">Memory</div>
+                    <div style="color: #00ffff; font-weight: 600;">2.4 GB</div>
+                </div>
+                <div>
+                    <div style="color: #666; margin-bottom: 2px;">Uptime</div>
+                    <div style="color: #00ffff; font-weight: 600;">4h 28m</div>
+                </div>
+                <div>
+                    <div style="color: #666; margin-bottom: 2px;">Status</div>
+                    <div style="color: #00ff88; font-weight: 600;">Nominal</div>
                 </div>
             </div>
 
-            <div style="border-top: 1px solid rgba(0, 255, 255, 0.1); margin-top: 15px; padding-top: 15px;">
-                <div class="panel-title">📋 Recent Tasks</div>
-                <div class="activity-item">
-                    <span class="timestamp">[09:23]</span><br>Completed LinkedIn post analysis
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(0, 255, 255, 0.1);">
+                <div class="panel-label">Recent Tasks</div>
+                <div class="activity-line">
+                    <span class="timestamp">[09:23]</span> Analysis complete
                 </div>
-                <div class="activity-item">
-                    <span class="timestamp">[09:15]</span><br>Generated 3 content variants
+                <div class="activity-line">
+                    <span class="timestamp">[09:15]</span> 3 variants generated
+                </div>
+                <div class="activity-line">
+                    <span class="timestamp">[09:08]</span> Market research done
                 </div>
             </div>
         </div>
 
         <!-- CENTER - IRIS & CONTROL -->
-        <div class="center-section">
+        <div class="iris-section">
             <div class="iris-container">
-                <canvas id="irisCanvas"></canvas>
-                <button class="control-button" id="controlButton">🎤</button>
+                <canvas id="waveCanvas"></canvas>
+                <button class="mic-button" id="micButton">🎙</button>
             </div>
-
-            <div class="status-display" id="statusDisplay">Click to speak</div>
-
-            <div class="conversation" id="conversation"></div>
+            <div class="status" id="statusDisplay">CLICK TO COMMAND</div>
+            <div class="conversation-box" id="conversation"></div>
         </div>
 
-        <!-- RIGHT PANEL - ACTIVITY & COLLABORATION -->
-        <div class="panel">
-            <div class="panel-title">🔗 Agent Network</div>
+        <!-- BOTTOM LEFT - AGENT NETWORK -->
+        <div class="panel bottom-left">
+            <div class="panel-label">Agent Network Activity</div>
 
-            <div class="activity-item collaboration">
+            <div class="activity-line agent-handoff">
                 <span class="timestamp">[09:25]</span><br>
-                <strong>Research →</strong> Writing<br>
-                Market insights handed off
+                Research handed off data to Writer
             </div>
 
-            <div class="activity-item collaboration">
+            <div class="activity-line agent-collaboration">
                 <span class="timestamp">[09:20]</span><br>
-                <strong>Writing ←</strong> Research<br>
-                Requesting trend data
+                Writer requested trend analysis
             </div>
 
-            <div class="activity-item handoff">
+            <div class="activity-line agent-handoff">
                 <span class="timestamp">[09:18]</span><br>
-                <strong>Supervision:</strong> Approving draft v2
+                Review Agent supervising Writer
             </div>
 
-            <div class="activity-item">
+            <div class="activity-line">
                 <span class="timestamp">[09:10]</span><br>
-                System initialized - All agents online
+                All agents initialized
+            </div>
+        </div>
+
+        <!-- BOTTOM RIGHT - LIVE FEED -->
+        <div class="panel bottom-right">
+            <div class="panel-label">Operations Log</div>
+
+            <div class="activity-line">
+                <span class="timestamp">[09:26]</span> System ready for commands
             </div>
 
-            <div style="border-top: 1px solid rgba(0, 255, 255, 0.1); margin-top: 15px; padding-top: 15px;">
-                <div class="panel-title">⚙️ System Status</div>
-                <div class="activity-item" style="background: rgba(0, 255, 136, 0.05); border-left-color: #00ff88;">
-                    CPU: 34% | Memory: 2.4GB | Uptime: 4h 28m
-                </div>
-                <div class="activity-item" style="background: rgba(0, 255, 136, 0.05); border-left-color: #00ff88;">
-                    All systems nominal
-                </div>
+            <div class="activity-line">
+                <span class="timestamp">[09:25]</span> Research division active
+            </div>
+
+            <div class="activity-line">
+                <span class="timestamp">[09:20]</span> Content generation initiated
+            </div>
+
+            <div class="activity-line">
+                <span class="timestamp">[09:15]</span> Framework loaded successfully
+            </div>
+
+            <div class="activity-line">
+                <span class="timestamp">[09:10]</span> JARVIS Command Center Online
             </div>
         </div>
     </div>
@@ -430,10 +437,9 @@
 
         let isListening = false;
         let isSpeaking = false;
-        let systemActivity = 0;
 
-        // Canvas setup
-        const canvas = document.getElementById('irisCanvas');
+        // Wave Canvas Setup
+        const canvas = document.getElementById('waveCanvas');
         const ctx = canvas.getContext('2d');
 
         function resizeCanvas() {
@@ -446,102 +452,87 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        let irisPhase = 0;
+        let waveTime = 0;
 
-        function drawIris() {
+        function drawWaves() {
             const centerX = canvas.width / (2 * window.devicePixelRatio);
             const centerY = canvas.height / (2 * window.devicePixelRatio);
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Iris pupil (center)
-            const pupilSize = 30 + (Math.sin(irisPhase) * 8);
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, pupilSize, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(0, 50, 100, 0.8)`;
-            ctx.fill();
+            // Draw multiple circular waves radiating from center
+            for (let waveIndex = 0; waveIndex < 8; waveIndex++) {
+                const points = [];
+                const baseRadius = 20 + (waveIndex * 18);
+                const waveLength = 30;
+                const amplitude = isSpeaking ? 8 : 4;
+                const segments = 200;
 
-            // Inner glow
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, pupilSize + 5, 0, Math.PI * 2);
-            ctx.strokeStyle = `rgba(0, 255, 255, 0.8)`;
-            ctx.lineWidth = 2;
-            ctx.stroke();
+                // Create wave points
+                for (let i = 0; i <= segments; i++) {
+                    const angle = (i / segments) * Math.PI * 2;
+                    const waveOffset = Math.sin(waveTime - waveIndex * 0.3) * amplitude;
+                    const radius = baseRadius + waveOffset;
 
-            // Iris rings
-            for (let ring = 1; ring <= 4; ring++) {
-                const radius = 40 + ring * 35;
-                const brightness = isSpeaking ? 0.8 : 0.4;
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    points.push({ x, y });
+                }
 
+                // Draw the wave
                 ctx.beginPath();
-                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(0, 255, 255, ${brightness - ring * 0.15})`;
-                ctx.lineWidth = 2;
-                ctx.stroke();
-            }
+                ctx.moveTo(points[0].x, points[0].y);
+                for (let p = 1; p < points.length; p++) {
+                    ctx.lineTo(points[p].x, points[p].y);
+                }
 
-            // Radiating spikes (like an iris)
-            const spikeCount = 24;
-            const spikeLength = 40;
-            const maxRadius = 160;
-
-            for (let i = 0; i < spikeCount; i++) {
-                const angle = (i / spikeCount) * Math.PI * 2;
-                const spike = Math.sin(irisPhase + i * 0.2) * 0.5 + 0.5;
-
-                const x1 = centerX + Math.cos(angle) * maxRadius;
-                const y1 = centerY + Math.sin(angle) * maxRadius;
-                const x2 = centerX + Math.cos(angle) * (maxRadius + spikeLength * spike);
-                const y2 = centerY + Math.sin(angle) * (maxRadius + spikeLength * spike);
-
-                ctx.beginPath();
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
-                ctx.strokeStyle = `rgba(0, 255, 255, ${0.6 * spike})`;
+                const opacity = isSpeaking ? 0.7 - waveIndex * 0.08 : 0.35 - waveIndex * 0.04;
+                ctx.strokeStyle = `rgba(0, 255, 255, ${opacity})`;
                 ctx.lineWidth = 1.5;
                 ctx.stroke();
             }
 
-            // System activity rings
-            const activityIntensity = systemActivity * 0.5;
-            for (let a = 0; a < 3; a++) {
-                const aRadius = 100 + (a * 30) + (Math.sin(irisPhase * 2 + a) * 15);
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, aRadius, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(0, 255, 255, ${activityIntensity * (0.3 - a * 0.1)})`;
-                ctx.lineWidth = 1;
-                ctx.stroke();
-            }
+            // Center core
+            const coreSize = 15 + Math.sin(waveTime) * 3;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, coreSize, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(0, 255, 255, ${isSpeaking ? 0.6 : 0.3})`;
+            ctx.fill();
 
-            irisPhase += isSpeaking ? 0.06 : 0.02;
-            systemActivity = Math.max(0, systemActivity - 0.02);
-            requestAnimationFrame(drawIris);
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, coreSize + 2, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(0, 255, 255, 0.8)`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            waveTime += isSpeaking ? 0.08 : 0.03;
+            requestAnimationFrame(drawWaves);
         }
 
-        drawIris();
+        drawWaves();
 
         // DOM Elements
-        const controlButton = document.getElementById('controlButton');
+        const micButton = document.getElementById('micButton');
         const statusDisplay = document.getElementById('statusDisplay');
         const conversation = document.getElementById('conversation');
 
+        // Speech Recognition
         recognition.continuous = false;
         recognition.interimResults = true;
         recognition.lang = 'en-US';
 
         function addMessage(text, type) {
             const msg = document.createElement('div');
-            msg.className = `message ${type}`;
+            msg.className = `chat-msg ${type}`;
             msg.textContent = text;
             conversation.appendChild(msg);
             conversation.scrollTop = conversation.scrollHeight;
-            systemActivity = 1.0;
         }
 
         recognition.onstart = () => {
             isListening = true;
-            controlButton.classList.add('listening');
-            statusDisplay.textContent = 'Listening...';
+            micButton.classList.add('listening');
+            statusDisplay.textContent = 'LISTENING...';
             addMessage('Listening...', 'system');
         };
 
@@ -550,35 +541,34 @@
             for (let i = event.resultIndex; i < event.results.length; i++) {
                 const transcriptSegment = event.results[i][0].transcript;
                 if (event.results[i].isFinal) {
-                    statusDisplay.textContent = transcriptSegment;
+                    statusDisplay.textContent = transcriptSegment.toUpperCase();
                 } else {
                     interimTranscript += transcriptSegment;
                 }
             }
             if (interimTranscript) {
-                statusDisplay.textContent = interimTranscript;
+                statusDisplay.textContent = interimTranscript.toUpperCase();
             }
         };
 
         recognition.onend = async () => {
             isListening = false;
-            controlButton.classList.remove('listening');
-            statusDisplay.textContent = 'Processing...';
+            micButton.classList.remove('listening');
+            statusDisplay.textContent = 'PROCESSING...';
             const userInput = statusDisplay.textContent;
 
-            if (userInput.trim() && userInput !== 'Processing...') {
+            if (userInput.trim() && userInput !== 'PROCESSING...') {
                 addMessage(userInput, 'user');
                 await processUserInput(userInput);
             }
         };
 
         recognition.onerror = (event) => {
-            statusDisplay.textContent = `Error: ${event.error}`;
-            controlButton.classList.remove('listening');
-            addMessage(`Error: ${event.error}`, 'system');
+            statusDisplay.textContent = `ERROR: ${event.error.toUpperCase()}`;
+            micButton.classList.remove('listening');
         };
 
-        controlButton.addEventListener('click', () => {
+        micButton.addEventListener('click', () => {
             if (isListening) {
                 recognition.stop();
             } else {
@@ -638,11 +628,11 @@
 
         async function processUserInput(input) {
             const messages = [
-                'Spinning up research agent...',
-                'Researched latest trends in your niche',
-                'Writing agent drafting posts...',
-                'Generated 3 unique variations',
-                'Ready for your review!'
+                'Activating Research Division...',
+                'Market analysis underway...',
+                'Engaging Content Writer...',
+                'Generating variations...',
+                'Ready for review'
             ];
 
             for (let msg of messages) {
@@ -651,14 +641,14 @@
             }
 
             await new Promise(resolve => setTimeout(resolve, 500));
-            speakAsJarvis('I\'ve researched your market, generated three unique post variations, and they\'re ready for your approval. Each one targets a different angle for maximum impact.');
-            statusDisplay.textContent = 'Ready to assist';
+            speakAsJarvis('Command acknowledged. Research division has analyzed your market. Content writer has generated three unique variations. Standing by for approval.');
+            statusDisplay.textContent = 'READY FOR COMMANDS';
         }
 
         window.addEventListener('load', () => {
             setTimeout(() => {
-                addMessage('JARVIS Command Center Online', 'system');
-                speakAsJarvis('Mission control online. All agents standing by. What shall we create today?');
+                addMessage('System initialized', 'system');
+                speakAsJarvis('Command center online. All divisions standing by. What is your command?');
             }, 500);
         });
     </script>
