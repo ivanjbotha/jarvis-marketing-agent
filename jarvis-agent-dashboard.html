@@ -52,38 +52,34 @@
             text-transform: uppercase;
         }
 
-        /* MAIN CONTENT - TWO COLUMNS */
-        .main-content {
+        /* MAIN LAYOUT */
+        .main-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 30px;
             flex: 1;
-            align-items: start;
         }
 
-        /* LEFT SIDEBAR */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .panel {
+        /* LEFT PANEL */
+        .left-panel {
             background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(0, 255, 255, 0.2);
             border-radius: 8px;
-            padding: 15px;
+            padding: 20px;
             backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .panel-title {
             font-size: 12px;
             font-weight: 600;
             color: #00ffff;
-            margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 1px;
             text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+            margin-bottom: 10px;
         }
 
         .stat-item {
@@ -92,10 +88,6 @@
             padding: 8px 0;
             border-bottom: 1px solid rgba(0, 255, 255, 0.1);
             font-size: 12px;
-        }
-
-        .stat-item:last-child {
-            border-bottom: none;
         }
 
         .stat-label {
@@ -107,100 +99,56 @@
             font-weight: 600;
         }
 
-        /* CENTER - ANIMATED CIRCLE */
-        .center-section {
+        /* CENTER - VOICE VISUALIZER */
+        .center-panel {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 30px;
         }
 
-        .voice-visualizer {
+        .visualizer-container {
             position: relative;
-            width: 280px;
-            height: 280px;
+            width: 320px;
+            height: 320px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .sound-circles {
-            position: absolute;
+        #voiceCanvas {
             width: 100%;
             height: 100%;
             border-radius: 50%;
         }
 
-        .sound-circle {
+        .center-button {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 2px solid rgba(0, 255, 255, 0.3);
-            border-radius: 50%;
-            animation: pulse-out 2s ease-out infinite;
-        }
-
-        .sound-circle:nth-child(1) {
-            animation-delay: 0s;
-        }
-
-        .sound-circle:nth-child(2) {
-            animation-delay: 0.4s;
-        }
-
-        .sound-circle:nth-child(3) {
-            animation-delay: 0.8s;
-        }
-
-        @keyframes pulse-out {
-            0% {
-                transform: scale(0.3);
-                opacity: 1;
-                border-color: rgba(0, 255, 255, 0.8);
-            }
-            100% {
-                transform: scale(1);
-                opacity: 0;
-                border-color: rgba(0, 255, 255, 0);
-            }
-        }
-
-        .center-circle {
-            position: relative;
-            z-index: 10;
-            width: 140px;
-            height: 140px;
+            width: 120px;
+            height: 120px;
             border: 2px solid #00ffff;
             border-radius: 50%;
+            background: rgba(0, 255, 255, 0.05);
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 60px;
-            background: rgba(0, 255, 255, 0.1);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), inset 0 0 30px rgba(0, 255, 255, 0.1);
+            font-size: 50px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
             transition: all 0.3s ease;
+            z-index: 10;
         }
 
-        .center-circle.listening {
+        .center-button:hover {
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        .center-button.listening {
             border-color: #ff4444;
-            box-shadow: 0 0 40px rgba(255, 68, 68, 0.5), inset 0 0 30px rgba(255, 68, 68, 0.1);
-        }
-
-        .center-circle.speaking {
-            border-color: #00ffff;
-            box-shadow: 0 0 50px rgba(0, 255, 255, 0.6), inset 0 0 30px rgba(0, 255, 255, 0.2);
-        }
-
-        .status-indicator {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #00ff88;
-            box-shadow: 0 0 10px #00ff88;
+            background: rgba(255, 68, 68, 0.1);
+            box-shadow: 0 0 50px rgba(255, 68, 68, 0.5);
         }
 
         .status-text {
@@ -208,10 +156,10 @@
             color: #00ffff;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 10px;
+            text-align: center;
         }
 
-        /* RIGHT PANEL - FEED/AGENTS */
+        /* RIGHT PANEL - CONVERSATION */
         .right-panel {
             background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(0, 255, 255, 0.2);
@@ -222,68 +170,63 @@
             flex-direction: column;
             gap: 15px;
             max-height: 600px;
+        }
+
+        .conversation {
+            flex: 1;
             overflow-y: auto;
-        }
-
-        .activity-line {
-            font-size: 11px;
-            line-height: 1.6;
-            padding: 8px 10px;
-            border-left: 2px solid rgba(0, 255, 255, 0.3);
-            padding-left: 12px;
-            font-family: 'Courier New', monospace;
-            color: #00ffff;
-        }
-
-        .activity-line.warning {
-            color: #ffaa00;
-            border-left-color: rgba(255, 170, 0, 0.5);
-        }
-
-        .activity-line.error {
-            color: #ff4444;
-            border-left-color: rgba(255, 68, 68, 0.5);
-        }
-
-        .timestamp {
-            color: #555;
-            font-size: 9px;
-        }
-
-        /* AGENT CARDS */
-        .agent-cards {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            display: flex;
+            flex-direction: column;
             gap: 12px;
-            margin-top: 10px;
         }
 
-        .agent-card {
-            background: rgba(0, 255, 255, 0.05);
-            border: 1px solid rgba(0, 255, 255, 0.2);
+        .message {
+            padding: 12px;
             border-radius: 6px;
-            padding: 10px;
-            font-size: 11px;
+            font-size: 12px;
+            line-height: 1.5;
+            max-width: 100%;
+            word-wrap: break-word;
         }
 
-        .agent-card .status {
-            display: inline-block;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #00ff88;
-            margin-right: 5px;
-        }
-
-        .agent-card .name {
+        .message.user {
+            background: rgba(0, 255, 255, 0.1);
+            border-left: 3px solid #00ffff;
             color: #00ffff;
-            font-weight: 600;
+            align-self: flex-end;
+            max-width: 90%;
         }
 
-        .agent-card .task {
-            color: #888;
-            font-size: 9px;
-            margin-top: 3px;
+        .message.jarvis {
+            background: rgba(0, 200, 255, 0.05);
+            border-left: 3px solid #0088ff;
+            color: #88ddff;
+            align-self: flex-start;
+            max-width: 90%;
+        }
+
+        .message.system {
+            background: rgba(255, 170, 0, 0.05);
+            border-left: 3px solid #ffaa00;
+            color: #ffaa00;
+            font-size: 11px;
+            text-align: center;
+            align-self: center;
+            max-width: 80%;
+        }
+
+        /* SCROLLBAR */
+        .conversation::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .conversation::-webkit-scrollbar-track {
+            background: rgba(0, 255, 255, 0.05);
+        }
+
+        .conversation::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 255, 0.3);
+            border-radius: 3px;
         }
 
         /* SETTINGS */
@@ -326,7 +269,6 @@
             border-radius: 4px;
             color: #00ffff;
             font-size: 12px;
-            font-family: inherit;
         }
 
         .setting-group input:focus,
@@ -336,29 +278,10 @@
             box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
         }
 
-        /* SCROLLBAR */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 255, 255, 0.05);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(0, 255, 255, 0.3);
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 255, 255, 0.5);
-        }
-
         /* RESPONSIVE */
         @media (max-width: 1024px) {
-            .main-content {
+            .main-grid {
                 grid-template-columns: 1fr;
-                gap: 20px;
             }
         }
     </style>
@@ -371,75 +294,58 @@
             <p>Mission Control Dashboard</p>
         </div>
 
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-            <!-- LEFT SIDEBAR -->
-            <div class="sidebar">
-                <!-- SYSTEM STATUS -->
-                <div class="panel">
-                    <div class="panel-title">System Status</div>
-                    <div class="stat-item">
-                        <span class="stat-label">CPU Usage</span>
-                        <span class="stat-value">34%</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Memory</span>
-                        <span class="stat-value">2.4 GB</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Uptime</span>
-                        <span class="stat-value">8h 47m</span>
-                    </div>
+        <!-- MAIN GRID -->
+        <div class="main-grid">
+            <!-- LEFT PANEL -->
+            <div class="left-panel">
+                <div class="panel-title">System Status</div>
+                <div class="stat-item">
+                    <span class="stat-label">Status</span>
+                    <span class="stat-value">● Online</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">CPU Usage</span>
+                    <span class="stat-value">34%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Memory</span>
+                    <span class="stat-value">2.4 GB</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Uptime</span>
+                    <span class="stat-value">8h 47m</span>
                 </div>
 
-                <!-- AGENTS STATUS -->
-                <div class="panel">
-                    <div class="panel-title">Active Agents</div>
-                    <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <div>
-                            <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #00ff88; margin-right: 5px;"></span>
-                            <span style="color: #00ffff; font-size: 11px;">Research</span>
-                        </div>
-                        <div>
-                            <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #00ff88; margin-right: 5px;"></span>
-                            <span style="color: #00ffff; font-size: 11px;">Writing</span>
-                        </div>
-                        <div>
-                            <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #888; margin-right: 5px;"></span>
-                            <span style="color: #888; font-size: 11px;">Approval</span>
-                        </div>
-                        <div>
-                            <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #888; margin-right: 5px;"></span>
-                            <span style="color: #888; font-size: 11px;">Posting</span>
-                        </div>
+                <div style="border-top: 1px solid rgba(0, 255, 255, 0.1); margin-top: 15px; padding-top: 15px;">
+                    <div class="panel-title">Agents</div>
+                    <div class="stat-item">
+                        <span class="stat-label">Research</span>
+                        <span class="stat-value">● Active</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Writing</span>
+                        <span class="stat-value">● Active</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Approval</span>
+                        <span class="stat-value">○ Idle</span>
                     </div>
                 </div>
             </div>
 
-            <!-- CENTER - ANIMATED VOICE VISUALIZER -->
-            <div class="center-section">
-                <div class="voice-visualizer">
-                    <div class="sound-circles">
-                        <div class="sound-circle"></div>
-                        <div class="sound-circle"></div>
-                        <div class="sound-circle"></div>
-                    </div>
-                    <div class="center-circle" id="centerCircle">
-                        🎤
-                        <div class="status-indicator"></div>
-                    </div>
+            <!-- CENTER PANEL -->
+            <div class="center-panel">
+                <div class="visualizer-container">
+                    <canvas id="voiceCanvas"></canvas>
+                    <button class="center-button" id="centerButton">🎤</button>
                 </div>
                 <div class="status-text" id="statusText">Click to speak</div>
             </div>
 
-            <!-- RIGHT PANEL - ACTIVITY FEED -->
+            <!-- RIGHT PANEL - CONVERSATION -->
             <div class="right-panel">
-                <div class="panel-title">System Activity</div>
-                <div id="activityFeed" style="flex: 1; overflow-y: auto;">
-                    <div class="activity-line"><span class="timestamp">[00:00]</span> System initialized</div>
-                    <div class="activity-line"><span class="timestamp">[00:01]</span> All agents online</div>
-                    <div class="activity-line"><span class="timestamp">[00:02]</span> Ready for voice input</div>
-                </div>
+                <div class="panel-title">Conversation</div>
+                <div class="conversation" id="conversation"></div>
             </div>
         </div>
 
@@ -455,15 +361,6 @@
                     <label>Business Niche</label>
                     <input type="text" id="linkedinNiche" placeholder="Your niche" value="Leadership Development, Coaching, AI for Managers">
                 </div>
-                <div class="setting-group">
-                    <label>Posting Frequency</label>
-                    <select id="postingFrequency">
-                        <option>2x per week (Tuesday, Thursday)</option>
-                        <option>3x per week</option>
-                        <option>Daily</option>
-                        <option>Manual only</option>
-                    </select>
-                </div>
             </div>
         </div>
     </div>
@@ -474,33 +371,98 @@
         const recognition = new SpeechRecognition();
         const synth = window.speechSynthesis;
 
-        let isListening = false;
         const googleCloudApiKey = 'AIzaSyB8M5fROsWmdBD51j5Xe2Mg5e5HDwqhUZ8';
 
+        let isListening = false;
+        let isSpeaking = false;
+
+        // Canvas setup
+        const canvas = document.getElementById('voiceCanvas');
+        const ctx = canvas.getContext('2d');
+        let animationFrameId;
+
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        let wavePhase = 0;
+        const waveFrequency = 0.05;
+        const waveAmplitude = 10;
+
+        function drawWaves() {
+            const centerX = canvas.width / (2 * window.devicePixelRatio);
+            const centerY = canvas.height / (2 * window.devicePixelRatio);
+            const baseRadius = 40;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw multiple wave rings
+            for (let ring = 0; ring < 5; ring++) {
+                const points = [];
+                const radius = baseRadius + ring * 25;
+                const segments = 180;
+
+                for (let i = 0; i <= segments; i++) {
+                    const angle = (i / segments) * Math.PI * 2;
+                    const waveOffset = Math.sin(wavePhase + ring * 0.3) * (isSpeaking ? waveAmplitude * 1.5 : waveAmplitude);
+                    const r = radius + waveOffset;
+
+                    const x = centerX + Math.cos(angle) * r;
+                    const y = centerY + Math.sin(angle) * r;
+
+                    points.push({ x, y });
+                }
+
+                // Draw wave line
+                ctx.beginPath();
+                ctx.moveTo(points[0].x, points[0].y);
+                for (let i = 1; i < points.length; i++) {
+                    ctx.lineTo(points[i].x, points[i].y);
+                }
+
+                const opacity = isSpeaking ? 0.6 - ring * 0.1 : 0.3 - ring * 0.05;
+                ctx.strokeStyle = `rgba(0, 255, 255, ${opacity})`;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            wavePhase += waveFrequency;
+            animationFrameId = requestAnimationFrame(drawWaves);
+        }
+
+        drawWaves();
+
+        // DOM Elements
+        const centerButton = document.getElementById('centerButton');
+        const statusText = document.getElementById('statusText');
+        const conversation = document.getElementById('conversation');
+        const apiKeyInput = document.getElementById('apiKey');
+        const nicheInput = document.getElementById('linkedinNiche');
+
+        // Speech Recognition
         recognition.continuous = false;
         recognition.interimResults = true;
         recognition.lang = 'en-US';
 
-        const centerCircle = document.getElementById('centerCircle');
-        const statusText = document.getElementById('statusText');
-        const activityFeed = document.getElementById('activityFeed');
-        const apiKeyInput = document.getElementById('apiKey');
-        const nicheInput = document.getElementById('linkedinNiche');
-
-        function addActivity(message, type = 'success') {
-            const time = new Date().toLocaleTimeString('en-US', { hour12: false });
-            const line = document.createElement('div');
-            line.className = `activity-line ${type}`;
-            line.innerHTML = `<span class="timestamp">[${time}]</span> ${message}`;
-            activityFeed.appendChild(line);
-            activityFeed.scrollTop = activityFeed.scrollHeight;
+        function addMessage(text, type) {
+            const msg = document.createElement('div');
+            msg.className = `message ${type}`;
+            msg.textContent = text;
+            conversation.appendChild(msg);
+            conversation.scrollTop = conversation.scrollHeight;
         }
 
         recognition.onstart = () => {
             isListening = true;
-            centerCircle.classList.add('listening');
+            centerButton.classList.add('listening');
             statusText.textContent = 'Listening...';
-            addActivity('Voice input started', 'success');
+            addMessage('Listening...', 'system');
         };
 
         recognition.onresult = (event) => {
@@ -520,27 +482,23 @@
 
         recognition.onend = async () => {
             isListening = false;
-            centerCircle.classList.remove('listening');
-            centerCircle.classList.add('speaking');
+            centerButton.classList.remove('listening');
             statusText.textContent = 'Processing...';
             const userInput = statusText.textContent;
+
             if (userInput.trim() && userInput !== 'Processing...') {
-                addActivity(`User: "${userInput}"`, 'success');
+                addMessage(userInput, 'user');
                 await processUserInput(userInput);
             }
-            setTimeout(() => {
-                centerCircle.classList.remove('speaking');
-                statusText.textContent = 'Click to speak';
-            }, 2000);
         };
 
         recognition.onerror = (event) => {
             statusText.textContent = `Error: ${event.error}`;
-            centerCircle.classList.remove('listening');
-            addActivity(`Error: ${event.error}`, 'error');
+            centerButton.classList.remove('listening');
+            addMessage(`Error: ${event.error}`, 'system');
         };
 
-        centerCircle.addEventListener('click', () => {
+        centerButton.addEventListener('click', () => {
             if (isListening) {
                 recognition.stop();
             } else {
@@ -550,45 +508,33 @@
         });
 
         async function speakAsJarvis(text) {
-            console.log('='.repeat(50));
-            console.log('JARVIS VOICE SYSTEM - GOOGLE CLOUD TTS');
-            console.log('='.repeat(50));
-            console.log('Text:', text);
-            console.log('API Key Present:', !!googleCloudApiKey);
+            isSpeaking = true;
+            console.log('🎤 Speaking:', text);
 
             if (googleCloudApiKey) {
                 try {
-                    console.log('Calling Google Cloud Text-to-Speech API...');
-
                     const response = await fetch(
                         `https://texttospeech.googleapis.com/v1/text:synthesize?key=${googleCloudApiKey}`,
                         {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
+                            headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
                                 input: { text: text },
                                 voice: {
                                     languageCode: 'en-GB',
-                                    name: 'en-GB-Neural2-A', // Male British voice
+                                    name: 'en-GB-Neural2-A',
                                 },
                                 audioConfig: {
                                     audioEncoding: 'MP3',
-                                    pitch: -2.0, // Deeper voice
-                                    speakingRate: 0.85, // Slower pace
+                                    pitch: -2.0,
+                                    speakingRate: 0.85,
                                 },
                             }),
                         }
                     );
 
-                    console.log('Response Status:', response.status);
-
                     if (response.ok) {
                         const data = await response.json();
-                        console.log('Audio content received');
-
-                        // Decode the audio content
                         const audioContent = data.audioContent;
                         const binaryString = atob(audioContent);
                         const bytes = new Uint8Array(binaryString.length);
@@ -599,69 +545,45 @@
                         const audioBlob = new Blob([bytes], { type: 'audio/mpeg' });
                         const audioUrl = URL.createObjectURL(audioBlob);
                         const audio = new Audio(audioUrl);
+                        audio.onended = () => { isSpeaking = false; };
                         audio.play();
 
-                        console.log('✓ SUCCESS: Google Cloud TTS audio playing!');
-                        addActivity('✓ Playing Google Cloud voice (en-GB-Neural2-A)', 'success');
+                        console.log('✓ Playing Google Cloud TTS');
                         return;
-                    } else {
-                        const errorData = await response.json();
-                        console.error('✗ Google Cloud Error:', errorData);
-                        addActivity(`✗ Voice Error: ${errorData.error?.message || 'Unknown error'}`, 'error');
                     }
                 } catch (error) {
-                    console.error('✗ Error:', error.message);
-                    addActivity(`✗ Error: ${error.message}`, 'error');
+                    console.error('Error:', error.message);
                 }
             }
 
-            // Fallback to browser TTS
-            console.log('Falling back to browser speech synthesis...');
-            addActivity('Fallback: Using browser voice', 'warning');
-
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 0.75;
-            utterance.pitch = 0.6;
-            utterance.volume = 1.0;
-
-            const voices = synth.getVoices();
-            const britishVoice = voices.find(voice => voice.lang.startsWith('en-GB')) || voices[0];
-            console.log('Selected voice:', britishVoice.name);
-
-            utterance.voice = britishVoice;
-            synth.speak(utterance);
-            console.log('='.repeat(50));
+            isSpeaking = false;
         }
 
         async function processUserInput(input) {
             const apiKey = apiKeyInput.value;
 
             if (!apiKey) {
-                speakAsJarvis("I need your Claude API key configured.");
-                addActivity('API key required', 'warning');
+                addMessage('API key required', 'system');
+                speakAsJarvis('Please configure your Claude API key.');
+                statusText.textContent = 'Click to speak';
                 return;
             }
 
-            addActivity('Initiating workflow...', 'success');
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            addActivity('Research agent active', 'success');
+            addMessage('Processing...', 'system');
             await new Promise(resolve => setTimeout(resolve, 1500));
-            addActivity('Content generated', 'success');
-            await new Promise(resolve => setTimeout(resolve, 500));
 
-            speakAsJarvis("I've analyzed your content and generated posts ready for review.");
+            const response = 'I\'ve analyzed your content and prepared posts for review.';
+            addMessage(response, 'jarvis');
+            speakAsJarvis(response);
+            statusText.textContent = 'Click to speak';
         }
 
         window.addEventListener('load', () => {
             setTimeout(() => {
-                speakAsJarvis("Mission control online. Ready to assist.");
-                addActivity('JARVIS initialized', 'success');
+                addMessage('JARVIS online and ready', 'system');
+                speakAsJarvis('Mission control online. Ready to assist.');
             }, 500);
         });
-
-        synth.onvoiceschanged = () => {
-            synth.getVoices();
-        };
     </script>
 </body>
 </html>
