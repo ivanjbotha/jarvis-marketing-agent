@@ -617,12 +617,7 @@
                             'xi-api-key': elevenLabsKey
                         },
                         body: JSON.stringify({
-                            text: text,
-                            model_id: 'eleven_monolingual_v1',
-                            voice_settings: {
-                                stability: 0.75,
-                                similarity_boost: 0.9
-                            }
+                            text: text
                         })
                     });
 
@@ -648,8 +643,8 @@
 
             // Fallback to browser speech synthesis
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 0.85; // Slower, more professional
-            utterance.pitch = 0.8; // Lower pitch for male voice
+            utterance.rate = 1.0; // Natural rate
+            utterance.pitch = 1.0; // Natural pitch
             utterance.volume = 1.0;
 
             // Use English (UK) for refined, neutral accent - prefer male voice
