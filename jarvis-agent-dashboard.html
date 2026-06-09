@@ -637,24 +637,30 @@
                         return;
                     } else {
                         const errorText = await response.text();
-                        console.log('ElevenLabs error:', response.status, errorText);
+                        console.error('ElevenLabs error:', response.status, errorText);
+                        console.log('Falling back to browser voice');
                     }
                 } catch (error) {
-                    console.log('ElevenLabs error:', error.message);
+                    console.error('ElevenLabs fetch error:', error.message);
+                    console.log('Falling back to browser voice');
                 }
             }
 
             // Fallback to browser speech synthesis
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 1.17;
-            utterance.pitch = 0.95;
+            utterance.rate = 0.85; // Slower, more professional
+            utterance.pitch = 0.8; // Lower pitch for male voice
             utterance.volume = 1.0;
 
-            // Use English (UK) for refined, neutral accent
+            // Use English (UK) for refined, neutral accent - prefer male voice
             const voices = synth.getVoices();
-            const britishVoice = voices.find(voice => voice.lang.includes('en-GB')) || voices[0];
-            utterance.voice = britishVoice;
+            const maleVoice = voices.find(voice =>
+                voice.lang.includes('en-GB') && voice.name.toLowerCase().includes('male')
+            ) || voices.find(voice => voice.lang.includes('en-GB')) || voices[0];
 
+            utterance.voice = maleVoice;
+
+            console.log('Using browser voice fallback:', maleVoice.name);
             synth.speak(utterance);
         }
 
