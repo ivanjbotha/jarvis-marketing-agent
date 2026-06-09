@@ -475,7 +475,7 @@
         const synth = window.speechSynthesis;
 
         let isListening = false;
-        const elevenLabsKey = 'sk_5798eb4ca2fa9a76005fcf00d83a71a362313c75ac6a6613';
+        const googleCloudApiKey = 'AIzaSyB8M5fROsWmdBD51j5Xe2Mg5e5HDwqhUZ8';
 
         recognition.continuous = false;
         recognition.interimResults = true;
@@ -551,61 +551,68 @@
 
         async function speakAsJarvis(text) {
             console.log('='.repeat(50));
-            console.log('JARVIS VOICE SYSTEM - DEBUG MODE');
+            console.log('JARVIS VOICE SYSTEM - GOOGLE CLOUD TTS');
             console.log('='.repeat(50));
             console.log('Text:', text);
-            console.log('Voice ID:', 'Sq93GQT4X1lKDXsQcixO');
-            console.log('ElevenLabs Key Present:', !!elevenLabsKey);
-            console.log('ElevenLabs Key Length:', elevenLabsKey ? elevenLabsKey.length : 0);
+            console.log('API Key Present:', !!googleCloudApiKey);
 
-            if (elevenLabsKey && elevenLabsKey.length > 0) {
+            if (googleCloudApiKey) {
                 try {
-                    console.log('Attempting ElevenLabs API call...');
-                    console.log('URL: https://api.elevenlabs.io/v1/text-to-speech/Sq93GQT4X1lKDXsQcixO');
+                    console.log('Calling Google Cloud Text-to-Speech API...');
 
-                    const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/Sq93GQT4X1lKDXsQcixO', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'xi-api-key': elevenLabsKey
-                        },
-                        body: JSON.stringify({ text: text })
-                    });
+                    const response = await fetch(
+                        `https://texttospeech.googleapis.com/v1/text:synthesize?key=${googleCloudApiKey}`,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                input: { text: text },
+                                voice: {
+                                    languageCode: 'en-GB',
+                                    name: 'en-GB-Neural2-A', // Male British voice
+                                },
+                                audioConfig: {
+                                    audioEncoding: 'MP3',
+                                    pitch: -2.0, // Deeper voice
+                                    speakingRate: 0.85, // Slower pace
+                                },
+                            }),
+                        }
+                    );
 
-                    console.log('Response received!');
-                    console.log('Status:', response.status);
-                    console.log('Status Text:', response.statusText);
-                    console.log('Headers:', {
-                        'content-type': response.headers.get('content-type'),
-                        'content-length': response.headers.get('content-length')
-                    });
+                    console.log('Response Status:', response.status);
 
                     if (response.ok) {
-                        const audioBlob = await response.blob();
-                        console.log('Audio blob size:', audioBlob.size, 'bytes');
-                        console.log('Audio blob type:', audioBlob.type);
+                        const data = await response.json();
+                        console.log('Audio content received');
 
+                        // Decode the audio content
+                        const audioContent = data.audioContent;
+                        const binaryString = atob(audioContent);
+                        const bytes = new Uint8Array(binaryString.length);
+                        for (let i = 0; i < binaryString.length; i++) {
+                            bytes[i] = binaryString.charCodeAt(i);
+                        }
+
+                        const audioBlob = new Blob([bytes], { type: 'audio/mpeg' });
                         const audioUrl = URL.createObjectURL(audioBlob);
                         const audio = new Audio(audioUrl);
                         audio.play();
 
-                        console.log('✓ SUCCESS: ElevenLabs audio playing!');
-                        addActivity('✓ Playing ElevenLabs voice (Sq93GQT4X1lKDXsQcixO)', 'success');
+                        console.log('✓ SUCCESS: Google Cloud TTS audio playing!');
+                        addActivity('✓ Playing Google Cloud voice (en-GB-Neural2-A)', 'success');
                         return;
                     } else {
-                        const errorBody = await response.text();
-                        console.error('✗ ElevenLabs API Error');
-                        console.error('Status:', response.status);
-                        console.error('Response:', errorBody);
-                        addActivity(`✗ ElevenLabs Error ${response.status}: ${errorBody}`, 'error');
+                        const errorData = await response.json();
+                        console.error('✗ Google Cloud Error:', errorData);
+                        addActivity(`✗ Voice Error: ${errorData.error?.message || 'Unknown error'}`, 'error');
                     }
                 } catch (error) {
-                    console.error('✗ Fetch Error:', error.name, error.message);
-                    console.error('Stack:', error.stack);
-                    addActivity(`✗ Network Error: ${error.message}`, 'error');
+                    console.error('✗ Error:', error.message);
+                    addActivity(`✗ Error: ${error.message}`, 'error');
                 }
-            } else {
-                console.warn('⚠ No ElevenLabs key provided');
             }
 
             // Fallback to browser TTS
@@ -618,17 +625,11 @@
             utterance.volume = 1.0;
 
             const voices = synth.getVoices();
-            console.log('Available voices:', voices.length);
-            voices.forEach((v, i) => {
-                console.log(`  ${i}: ${v.name} (${v.lang})`);
-            });
-
             const britishVoice = voices.find(voice => voice.lang.startsWith('en-GB')) || voices[0];
-            console.log('Selected voice:', britishVoice.name, britishVoice.lang);
+            console.log('Selected voice:', britishVoice.name);
 
             utterance.voice = britishVoice;
             synth.speak(utterance);
-            console.log('Browser voice playing');
             console.log('='.repeat(50));
         }
 
