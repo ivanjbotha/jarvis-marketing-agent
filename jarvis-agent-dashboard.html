@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.A.R.V.I.S - Mission Control</title>
+    <title>JARVIS - Mission Control</title>
     <style>
         * {
             margin: 0;
@@ -16,91 +16,132 @@
             background: linear-gradient(135deg, #0a0f1e 0%, #1a1f2e 100%);
             color: #e0e0e0;
             min-height: 100vh;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 320px 1fr 320px;
+            gap: 20px;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            height: 100vh;
         }
 
-        /* HEADER */
+        /* HEADER - Spans all columns */
         .header {
+            grid-column: 1 / -1;
             text-align: center;
-            padding: 20px 0;
-            margin-bottom: 30px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
         }
 
         .header h1 {
-            font-size: 36px;
+            font-size: 28px;
             font-weight: 700;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             color: #00ffff;
-            text-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
-            margin-bottom: 5px;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
         }
 
         .header p {
-            font-size: 12px;
-            letter-spacing: 2px;
+            font-size: 11px;
+            letter-spacing: 1px;
             color: #00ffff;
-            opacity: 0.6;
+            opacity: 0.5;
             text-transform: uppercase;
+            margin-top: 5px;
         }
 
-        /* MAIN LAYOUT */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            gap: 30px;
-            flex: 1;
-        }
-
-        /* LEFT PANEL */
-        .left-panel {
+        /* PANELS */
+        .panel {
             background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(0, 255, 255, 0.2);
+            border: 1px solid rgba(0, 255, 255, 0.15);
             border-radius: 8px;
             padding: 20px;
             backdrop-filter: blur(10px);
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
             gap: 15px;
         }
 
         .panel-title {
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             color: #00ffff;
             text-transform: uppercase;
             letter-spacing: 1px;
             text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
             margin-bottom: 10px;
-        }
-
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
             border-bottom: 1px solid rgba(0, 255, 255, 0.1);
-            font-size: 12px;
+            padding-bottom: 10px;
         }
 
-        .stat-label {
-            color: #888;
+        /* AGENT CARDS */
+        .agent-card {
+            background: rgba(0, 255, 255, 0.03);
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            border-radius: 6px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .stat-value {
-            color: #00ffff;
+        .agent-card:hover {
+            border-color: rgba(0, 255, 255, 0.4);
+            background: rgba(0, 255, 255, 0.08);
+        }
+
+        .agent-card.active {
+            border-color: #00ffff;
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .agent-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff88;
+            box-shadow: 0 0 8px #00ff88;
+        }
+
+        .agent-name {
+            font-size: 13px;
             font-weight: 600;
+            color: #00ffff;
         }
 
-        /* CENTER - VOICE VISUALIZER */
-        .center-panel {
+        .agent-task {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .task-progress {
+            width: 100%;
+            height: 3px;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .task-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #00ff88);
+            box-shadow: 0 0 8px #00ffff;
+        }
+
+        /* CENTER - CONTROL */
+        .center-section {
+            grid-column: 2;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -108,25 +149,24 @@
             gap: 30px;
         }
 
-        .visualizer-container {
+        .iris-container {
             position: relative;
-            width: 320px;
-            height: 320px;
+            width: 380px;
+            height: 380px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        #voiceCanvas {
+        #irisCanvas {
             width: 100%;
             height: 100%;
-            border-radius: 50%;
         }
 
-        .center-button {
+        .control-button {
             position: absolute;
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border: 2px solid #00ffff;
             border-radius: 50%;
             background: rgba(0, 255, 255, 0.05);
@@ -134,154 +174,133 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+            font-size: 44px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.1);
             transition: all 0.3s ease;
             z-index: 10;
         }
 
-        .center-button:hover {
-            box-shadow: 0 0 40px rgba(0, 255, 255, 0.5);
+        .control-button:hover {
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.5), inset 0 0 30px rgba(0, 255, 255, 0.2);
             transform: scale(1.05);
         }
 
-        .center-button.listening {
+        .control-button.listening {
             border-color: #ff4444;
             background: rgba(255, 68, 68, 0.1);
-            box-shadow: 0 0 50px rgba(255, 68, 68, 0.5);
+            box-shadow: 0 0 50px rgba(255, 68, 68, 0.5), inset 0 0 30px rgba(255, 68, 68, 0.1);
         }
 
-        .status-text {
+        .status-display {
+            text-align: center;
             font-size: 12px;
             color: #00ffff;
             text-transform: uppercase;
             letter-spacing: 1px;
-            text-align: center;
-        }
-
-        /* RIGHT PANEL - CONVERSATION */
-        .right-panel {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            border-radius: 8px;
-            padding: 20px;
-            backdrop-filter: blur(10px);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-height: 600px;
         }
 
         .conversation {
-            flex: 1;
+            width: 100%;
+            max-width: 600px;
+            max-height: 200px;
             overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
         .message {
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            line-height: 1.5;
-            max-width: 100%;
-            word-wrap: break-word;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            line-height: 1.4;
         }
 
         .message.user {
             background: rgba(0, 255, 255, 0.1);
-            border-left: 3px solid #00ffff;
             color: #00ffff;
-            align-self: flex-end;
-            max-width: 90%;
+            border-left: 2px solid #00ffff;
+            margin-left: auto;
+            max-width: 80%;
         }
 
         .message.jarvis {
             background: rgba(0, 200, 255, 0.05);
-            border-left: 3px solid #0088ff;
             color: #88ddff;
-            align-self: flex-start;
-            max-width: 90%;
+            border-left: 2px solid #0088ff;
+            margin-right: auto;
+            max-width: 80%;
         }
 
         .message.system {
             background: rgba(255, 170, 0, 0.05);
-            border-left: 3px solid #ffaa00;
             color: #ffaa00;
-            font-size: 11px;
             text-align: center;
-            align-self: center;
-            max-width: 80%;
+            font-size: 10px;
+        }
+
+        /* ACTIVITY FEED */
+        .activity-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 11px;
+        }
+
+        .activity-item {
+            padding: 10px;
+            background: rgba(0, 255, 255, 0.05);
+            border-left: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 4px;
+            color: #00ffff;
+        }
+
+        .activity-item.collaboration {
+            border-left-color: #00ff88;
+            color: #00ff88;
+        }
+
+        .activity-item.handoff {
+            border-left-color: #ffaa00;
+            color: #ffaa00;
+        }
+
+        .timestamp {
+            color: #555;
+            font-size: 9px;
         }
 
         /* SCROLLBAR */
-        .conversation::-webkit-scrollbar {
+        ::-webkit-scrollbar {
             width: 6px;
         }
 
-        .conversation::-webkit-scrollbar-track {
+        ::-webkit-scrollbar-track {
             background: rgba(0, 255, 255, 0.05);
         }
 
-        .conversation::-webkit-scrollbar-thumb {
+        ::-webkit-scrollbar-thumb {
             background: rgba(0, 255, 255, 0.3);
             border-radius: 3px;
         }
 
-        /* SETTINGS */
-        .settings {
-            margin-top: 30px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            border-radius: 8px;
-            padding: 20px;
-        }
-
-        .settings-title {
-            font-size: 12px;
-            font-weight: 600;
-            color: #00ffff;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .setting-group {
-            margin-bottom: 15px;
-        }
-
-        .setting-group label {
-            display: block;
-            font-size: 10px;
-            color: #888;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .setting-group input,
-        .setting-group select {
-            width: 100%;
-            padding: 8px 10px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            border-radius: 4px;
-            color: #00ffff;
-            font-size: 12px;
-        }
-
-        .setting-group input:focus,
-        .setting-group select:focus {
-            outline: none;
-            border-color: #00ffff;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 255, 255, 0.5);
         }
 
         /* RESPONSIVE */
-        @media (max-width: 1024px) {
-            .main-grid {
+        @media (max-width: 1400px) {
+            .container {
                 grid-template-columns: 1fr;
+            }
+
+            .iris-container {
+                width: 300px;
+                height: 300px;
             }
         }
     </style>
@@ -290,76 +309,114 @@
     <div class="container">
         <!-- HEADER -->
         <div class="header">
-            <h1>J.A.R.V.I.S</h1>
-            <p>Mission Control Dashboard</p>
+            <h1>⚡ J.A.R.V.I.S ⚡</h1>
+            <p>AI Team Command Center</p>
         </div>
 
-        <!-- MAIN GRID -->
-        <div class="main-grid">
-            <!-- LEFT PANEL -->
-            <div class="left-panel">
-                <div class="panel-title">System Status</div>
-                <div class="stat-item">
-                    <span class="stat-label">Status</span>
-                    <span class="stat-value">● Online</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">CPU Usage</span>
-                    <span class="stat-value">34%</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Memory</span>
-                    <span class="stat-value">2.4 GB</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Uptime</span>
-                    <span class="stat-value">8h 47m</span>
-                </div>
+        <!-- LEFT PANEL - AGENTS & TASKS -->
+        <div class="panel">
+            <div class="panel-title">🤖 Active Agents</div>
 
-                <div style="border-top: 1px solid rgba(0, 255, 255, 0.1); margin-top: 15px; padding-top: 15px;">
-                    <div class="panel-title">Agents</div>
-                    <div class="stat-item">
-                        <span class="stat-label">Research</span>
-                        <span class="stat-value">● Active</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Writing</span>
-                        <span class="stat-value">● Active</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Approval</span>
-                        <span class="stat-value">○ Idle</span>
-                    </div>
+            <div class="agent-card active">
+                <div class="agent-header">
+                    <div class="agent-status"></div>
+                    <div class="agent-name">Research</div>
+                </div>
+                <div class="agent-task">Analyzing market trends...</div>
+                <div class="task-progress">
+                    <div class="task-progress-bar" style="width: 75%;"></div>
                 </div>
             </div>
 
-            <!-- CENTER PANEL -->
-            <div class="center-panel">
-                <div class="visualizer-container">
-                    <canvas id="voiceCanvas"></canvas>
-                    <button class="center-button" id="centerButton">🎤</button>
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-status"></div>
+                    <div class="agent-name">Writing</div>
                 </div>
-                <div class="status-text" id="statusText">Click to speak</div>
+                <div class="agent-task">Drafting posts...</div>
+                <div class="task-progress">
+                    <div class="task-progress-bar" style="width: 45%;"></div>
+                </div>
             </div>
 
-            <!-- RIGHT PANEL - CONVERSATION -->
-            <div class="right-panel">
-                <div class="panel-title">Conversation</div>
-                <div class="conversation" id="conversation"></div>
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-status"></div>
+                    <div class="agent-name">Approval</div>
+                </div>
+                <div class="agent-task">Awaiting input...</div>
+                <div class="task-progress">
+                    <div class="task-progress-bar" style="width: 20%;"></div>
+                </div>
+            </div>
+
+            <div class="agent-card">
+                <div class="agent-header">
+                    <div class="agent-status"></div>
+                    <div class="agent-name">Posting</div>
+                </div>
+                <div class="agent-task">Scheduled for later...</div>
+                <div class="task-progress">
+                    <div class="task-progress-bar" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid rgba(0, 255, 255, 0.1); margin-top: 15px; padding-top: 15px;">
+                <div class="panel-title">📋 Recent Tasks</div>
+                <div class="activity-item">
+                    <span class="timestamp">[09:23]</span><br>Completed LinkedIn post analysis
+                </div>
+                <div class="activity-item">
+                    <span class="timestamp">[09:15]</span><br>Generated 3 content variants
+                </div>
             </div>
         </div>
 
-        <!-- SETTINGS -->
-        <div class="settings">
-            <div class="settings-title">Configuration</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="setting-group">
-                    <label>Claude API Key</label>
-                    <input type="password" id="apiKey" placeholder="sk-...">
+        <!-- CENTER - IRIS & CONTROL -->
+        <div class="center-section">
+            <div class="iris-container">
+                <canvas id="irisCanvas"></canvas>
+                <button class="control-button" id="controlButton">🎤</button>
+            </div>
+
+            <div class="status-display" id="statusDisplay">Click to speak</div>
+
+            <div class="conversation" id="conversation"></div>
+        </div>
+
+        <!-- RIGHT PANEL - ACTIVITY & COLLABORATION -->
+        <div class="panel">
+            <div class="panel-title">🔗 Agent Network</div>
+
+            <div class="activity-item collaboration">
+                <span class="timestamp">[09:25]</span><br>
+                <strong>Research →</strong> Writing<br>
+                Market insights handed off
+            </div>
+
+            <div class="activity-item collaboration">
+                <span class="timestamp">[09:20]</span><br>
+                <strong>Writing ←</strong> Research<br>
+                Requesting trend data
+            </div>
+
+            <div class="activity-item handoff">
+                <span class="timestamp">[09:18]</span><br>
+                <strong>Supervision:</strong> Approving draft v2
+            </div>
+
+            <div class="activity-item">
+                <span class="timestamp">[09:10]</span><br>
+                System initialized - All agents online
+            </div>
+
+            <div style="border-top: 1px solid rgba(0, 255, 255, 0.1); margin-top: 15px; padding-top: 15px;">
+                <div class="panel-title">⚙️ System Status</div>
+                <div class="activity-item" style="background: rgba(0, 255, 136, 0.05); border-left-color: #00ff88;">
+                    CPU: 34% | Memory: 2.4GB | Uptime: 4h 28m
                 </div>
-                <div class="setting-group">
-                    <label>Business Niche</label>
-                    <input type="text" id="linkedinNiche" placeholder="Your niche" value="Leadership Development, Coaching, AI for Managers">
+                <div class="activity-item" style="background: rgba(0, 255, 136, 0.05); border-left-color: #00ff88;">
+                    All systems nominal
                 </div>
             </div>
         </div>
@@ -369,17 +426,15 @@
     <script>
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
-        const synth = window.speechSynthesis;
-
         const googleCloudApiKey = 'AIzaSyB8M5fROsWmdBD51j5Xe2Mg5e5HDwqhUZ8';
 
         let isListening = false;
         let isSpeaking = false;
+        let systemActivity = 0;
 
         // Canvas setup
-        const canvas = document.getElementById('voiceCanvas');
+        const canvas = document.getElementById('irisCanvas');
         const ctx = canvas.getContext('2d');
-        let animationFrameId;
 
         function resizeCanvas() {
             const rect = canvas.getBoundingClientRect();
@@ -391,83 +446,85 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        let pulsePhase = 0;
+        let irisPhase = 0;
 
-        function drawGlowingPulse() {
+        function drawIris() {
             const centerX = canvas.width / (2 * window.devicePixelRatio);
             const centerY = canvas.height / (2 * window.devicePixelRatio);
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Calculate heartbeat pulse (0 to 1)
-            const beatCycle = (Math.sin(pulsePhase) + 1) / 2;
-            const pulseIntensity = isSpeaking ? 1.2 : 0.8;
-            const pulseStrength = beatCycle * pulseIntensity;
+            // Iris pupil (center)
+            const pupilSize = 30 + (Math.sin(irisPhase) * 8);
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, pupilSize, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(0, 50, 100, 0.8)`;
+            ctx.fill();
 
-            // Draw glowing rings with blur effect
-            for (let ring = 0; ring < 6; ring++) {
-                const delay = ring * 0.15;
-                const pulsedBeat = (Math.sin(pulsePhase - delay * 3) + 1) / 2;
+            // Inner glow
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, pupilSize + 5, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(0, 255, 255, 0.8)`;
+            ctx.lineWidth = 2;
+            ctx.stroke();
 
-                // Base radius for each ring
-                const baseRadius = 20 + ring * 18;
-                const radius = baseRadius + (pulsedBeat * 15);
+            // Iris rings
+            for (let ring = 1; ring <= 4; ring++) {
+                const radius = 40 + ring * 35;
+                const brightness = isSpeaking ? 0.8 : 0.4;
 
-                // Create glow effect with multiple circles
-                for (let glow = 4; glow > 0; glow--) {
-                    const glowRadius = radius + (glow * 3);
-                    const glowOpacity = (0.5 / glow) * (isSpeaking ? 0.8 : 0.4) * (1 - ring * 0.1);
-
-                    ctx.beginPath();
-                    ctx.arc(centerX, centerY, glowRadius, 0, Math.PI * 2);
-                    ctx.strokeStyle = `rgba(0, 200, 255, ${glowOpacity})`;
-                    ctx.lineWidth = 3;
-                    ctx.stroke();
-                }
-
-                // Main bright ring
                 ctx.beginPath();
                 ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-                const brightness = isSpeaking ? 1.0 : 0.7;
-                const mainOpacity = (0.8 - ring * 0.1) * brightness;
-                ctx.strokeStyle = `rgba(0, 255, 255, ${mainOpacity})`;
-                ctx.lineWidth = 2.5;
-                ctx.shadow = true;
-                ctx.shadowBlur = 20;
-                ctx.shadowColor = `rgba(0, 255, 255, ${mainOpacity * 0.6})`;
+                ctx.strokeStyle = `rgba(0, 255, 255, ${brightness - ring * 0.15})`;
+                ctx.lineWidth = 2;
                 ctx.stroke();
             }
 
-            // Center core glow
-            const coreGlowSize = 30 + (pulseStrength * 10);
-            for (let g = 3; g > 0; g--) {
+            // Radiating spikes (like an iris)
+            const spikeCount = 24;
+            const spikeLength = 40;
+            const maxRadius = 160;
+
+            for (let i = 0; i < spikeCount; i++) {
+                const angle = (i / spikeCount) * Math.PI * 2;
+                const spike = Math.sin(irisPhase + i * 0.2) * 0.5 + 0.5;
+
+                const x1 = centerX + Math.cos(angle) * maxRadius;
+                const y1 = centerY + Math.sin(angle) * maxRadius;
+                const x2 = centerX + Math.cos(angle) * (maxRadius + spikeLength * spike);
+                const y2 = centerY + Math.sin(angle) * (maxRadius + spikeLength * spike);
+
                 ctx.beginPath();
-                ctx.arc(centerX, centerY, coreGlowSize + (g * 4), 0, Math.PI * 2);
-                const coreOpacity = (0.4 / g) * (isSpeaking ? 0.9 : 0.5);
-                ctx.fillStyle = `rgba(0, 200, 255, ${coreOpacity})`;
-                ctx.fill();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.strokeStyle = `rgba(0, 255, 255, ${0.6 * spike})`;
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
             }
 
-            // Bright center core
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, coreGlowSize, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(0, 255, 255, ${isSpeaking ? 0.6 : 0.3})`;
-            ctx.fill();
+            // System activity rings
+            const activityIntensity = systemActivity * 0.5;
+            for (let a = 0; a < 3; a++) {
+                const aRadius = 100 + (a * 30) + (Math.sin(irisPhase * 2 + a) * 15);
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, aRadius, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(0, 255, 255, ${activityIntensity * (0.3 - a * 0.1)})`;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
 
-            pulsePhase += isSpeaking ? 0.08 : 0.04;
-            animationFrameId = requestAnimationFrame(drawGlowingPulse);
+            irisPhase += isSpeaking ? 0.06 : 0.02;
+            systemActivity = Math.max(0, systemActivity - 0.02);
+            requestAnimationFrame(drawIris);
         }
 
-        drawGlowingPulse();
+        drawIris();
 
         // DOM Elements
-        const centerButton = document.getElementById('centerButton');
-        const statusText = document.getElementById('statusText');
+        const controlButton = document.getElementById('controlButton');
+        const statusDisplay = document.getElementById('statusDisplay');
         const conversation = document.getElementById('conversation');
-        const apiKeyInput = document.getElementById('apiKey');
-        const nicheInput = document.getElementById('linkedinNiche');
 
-        // Speech Recognition
         recognition.continuous = false;
         recognition.interimResults = true;
         recognition.lang = 'en-US';
@@ -478,12 +535,13 @@
             msg.textContent = text;
             conversation.appendChild(msg);
             conversation.scrollTop = conversation.scrollHeight;
+            systemActivity = 1.0;
         }
 
         recognition.onstart = () => {
             isListening = true;
-            centerButton.classList.add('listening');
-            statusText.textContent = 'Listening...';
+            controlButton.classList.add('listening');
+            statusDisplay.textContent = 'Listening...';
             addMessage('Listening...', 'system');
         };
 
@@ -492,21 +550,21 @@
             for (let i = event.resultIndex; i < event.results.length; i++) {
                 const transcriptSegment = event.results[i][0].transcript;
                 if (event.results[i].isFinal) {
-                    statusText.textContent = transcriptSegment;
+                    statusDisplay.textContent = transcriptSegment;
                 } else {
                     interimTranscript += transcriptSegment;
                 }
             }
             if (interimTranscript) {
-                statusText.textContent = interimTranscript;
+                statusDisplay.textContent = interimTranscript;
             }
         };
 
         recognition.onend = async () => {
             isListening = false;
-            centerButton.classList.remove('listening');
-            statusText.textContent = 'Processing...';
-            const userInput = statusText.textContent;
+            controlButton.classList.remove('listening');
+            statusDisplay.textContent = 'Processing...';
+            const userInput = statusDisplay.textContent;
 
             if (userInput.trim() && userInput !== 'Processing...') {
                 addMessage(userInput, 'user');
@@ -515,23 +573,22 @@
         };
 
         recognition.onerror = (event) => {
-            statusText.textContent = `Error: ${event.error}`;
-            centerButton.classList.remove('listening');
+            statusDisplay.textContent = `Error: ${event.error}`;
+            controlButton.classList.remove('listening');
             addMessage(`Error: ${event.error}`, 'system');
         };
 
-        centerButton.addEventListener('click', () => {
+        controlButton.addEventListener('click', () => {
             if (isListening) {
                 recognition.stop();
             } else {
-                statusText.textContent = '';
+                statusDisplay.textContent = '';
                 recognition.start();
             }
         });
 
         async function speakAsJarvis(text) {
             isSpeaking = true;
-            console.log('🎤 Speaking:', text);
 
             if (googleCloudApiKey) {
                 try {
@@ -569,12 +626,10 @@
                         const audio = new Audio(audioUrl);
                         audio.onended = () => { isSpeaking = false; };
                         audio.play();
-
-                        console.log('✓ Playing Google Cloud TTS');
                         return;
                     }
                 } catch (error) {
-                    console.error('Error:', error.message);
+                    console.error('TTS Error:', error);
                 }
             }
 
@@ -582,28 +637,28 @@
         }
 
         async function processUserInput(input) {
-            const apiKey = apiKeyInput.value;
+            const messages = [
+                'Spinning up research agent...',
+                'Researched latest trends in your niche',
+                'Writing agent drafting posts...',
+                'Generated 3 unique variations',
+                'Ready for your review!'
+            ];
 
-            if (!apiKey) {
-                addMessage('API key required', 'system');
-                speakAsJarvis('Please configure your Claude API key.');
-                statusText.textContent = 'Click to speak';
-                return;
+            for (let msg of messages) {
+                await new Promise(resolve => setTimeout(resolve, 1200));
+                addMessage(msg, 'jarvis');
             }
 
-            addMessage('Processing...', 'system');
-            await new Promise(resolve => setTimeout(resolve, 1500));
-
-            const response = 'I\'ve analyzed your content and prepared posts for review.';
-            addMessage(response, 'jarvis');
-            speakAsJarvis(response);
-            statusText.textContent = 'Click to speak';
+            await new Promise(resolve => setTimeout(resolve, 500));
+            speakAsJarvis('I\'ve researched your market, generated three unique post variations, and they\'re ready for your approval. Each one targets a different angle for maximum impact.');
+            statusDisplay.textContent = 'Ready to assist';
         }
 
         window.addEventListener('load', () => {
             setTimeout(() => {
-                addMessage('JARVIS online and ready', 'system');
-                speakAsJarvis('Mission control online. Ready to assist.');
+                addMessage('JARVIS Command Center Online', 'system');
+                speakAsJarvis('Mission control online. All agents standing by. What shall we create today?');
             }, 500);
         });
     </script>
