@@ -542,8 +542,13 @@
 
         // Speak as Jarvis
         async function speakAsJarvis(text) {
+            console.log('=== JARVIS VOICE DEBUG ===');
+            console.log('Text to speak:', text);
+            console.log('ElevenLabs Key:', elevenLabsKey ? elevenLabsKey.substring(0, 20) + '...' : 'NO KEY');
+
             if (elevenLabsKey) {
                 try {
+                    console.log('Attempting ElevenLabs API call...');
                     const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/zNsotODqUhvbJ5wMG7Ei', {
                         method: 'POST',
                         headers: {
@@ -553,17 +558,32 @@
                         body: JSON.stringify({ text: text })
                     });
 
+                    console.log('ElevenLabs Response Status:', response.status);
+
                     if (response.ok) {
                         const audioBlob = await response.blob();
+                        console.log('Audio blob received, playing...');
                         const audioUrl = URL.createObjectURL(audioBlob);
                         const audio = new Audio(audioUrl);
                         audio.play();
+                        console.log('✓ ElevenLabs audio playing');
+                        addActivity('Using ElevenLabs voice (zNsotODqUhvbJ5wMG7Ei)', 'success');
                         return;
+                    } else {
+                        const errorText = await response.text();
+                        console.error('ElevenLabs API Error:', response.status, errorText);
+                        addActivity(`ElevenLabs Error: ${response.status}`, 'error');
                     }
                 } catch (error) {
-                    console.log('ElevenLabs error, using browser TTS');
+                    console.error('ElevenLabs Fetch Error:', error.message);
+                    addActivity(`ElevenLabs Error: ${error.message}`, 'error');
                 }
+            } else {
+                console.warn('NO ELEVENLABS KEY PROVIDED');
             }
+
+            console.log('Falling back to browser speech synthesis...');
+            addActivity('Using browser speech synthesis', 'warning');
 
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.rate = 1.0;
