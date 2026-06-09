@@ -452,64 +452,91 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        let waveTime = 0;
+        let entityTime = 0;
 
-        function drawWaves() {
+        function drawEntity() {
             const centerX = canvas.width / (2 * window.devicePixelRatio);
             const centerY = canvas.height / (2 * window.devicePixelRatio);
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw multiple circular waves radiating from center
-            for (let waveIndex = 0; waveIndex < 8; waveIndex++) {
+            // Draw organic flowing entity with multiple layers
+            for (let layer = 0; layer < 4; layer++) {
                 const points = [];
-                const baseRadius = 20 + (waveIndex * 18);
-                const waveLength = 30;
-                const amplitude = isSpeaking ? 8 : 4;
-                const segments = 200;
+                const baseRadius = 40 + (layer * 35);
+                const segments = 120;
+                const layerAmplitude = isSpeaking ? 20 - layer * 4 : 12 - layer * 3;
 
-                // Create wave points
+                // Create wavy organic points
                 for (let i = 0; i <= segments; i++) {
                     const angle = (i / segments) * Math.PI * 2;
-                    const waveOffset = Math.sin(waveTime - waveIndex * 0.3) * amplitude;
-                    const radius = baseRadius + waveOffset;
+
+                    // Multiple sine waves for organic feel
+                    const wave1 = Math.sin(entityTime * 0.8 + angle * 3 - layer * 0.4) * (layerAmplitude * 0.6);
+                    const wave2 = Math.sin(entityTime * 0.4 + angle * 2 + layer * 0.3) * (layerAmplitude * 0.4);
+                    const wave3 = Math.sin(entityTime * 1.2 + angle - layer * 0.2) * (layerAmplitude * 0.3);
+
+                    const totalWave = wave1 + wave2 + wave3;
+                    const radius = baseRadius + totalWave;
 
                     const x = centerX + Math.cos(angle) * radius;
                     const y = centerY + Math.sin(angle) * radius;
                     points.push({ x, y });
                 }
 
-                // Draw the wave
+                // Draw smooth organic curve
                 ctx.beginPath();
                 ctx.moveTo(points[0].x, points[0].y);
+
+                // Use quadratic curves for smooth organic flow
                 for (let p = 1; p < points.length; p++) {
-                    ctx.lineTo(points[p].x, points[p].y);
+                    const prev = points[p - 1];
+                    const curr = points[p];
+                    const next = points[(p + 1) % points.length];
+
+                    const cpx = (curr.x + next.x) / 2;
+                    const cpy = (curr.y + next.y) / 2;
+                    ctx.quadraticCurveTo(curr.x, curr.y, cpx, cpy);
                 }
 
-                const opacity = isSpeaking ? 0.7 - waveIndex * 0.08 : 0.35 - waveIndex * 0.04;
+                // Close path smoothly
+                ctx.quadraticCurveTo(points[points.length - 1].x, points[points.length - 1].y, points[0].x, points[0].y);
+
+                const opacity = isSpeaking ? 0.75 - layer * 0.15 : 0.4 - layer * 0.08;
+
+                // Fill with subtle gradient
+                const gradient = ctx.createRadialGradient(centerX, centerY, baseRadius - 20, centerX, centerY, baseRadius + 30);
+                gradient.addColorStop(0, `rgba(0, 255, 255, ${opacity * 0.5})`);
+                gradient.addColorStop(1, `rgba(0, 255, 255, ${opacity})`);
+
                 ctx.strokeStyle = `rgba(0, 255, 255, ${opacity})`;
-                ctx.lineWidth = 1.5;
+                ctx.lineWidth = 2;
                 ctx.stroke();
             }
 
-            // Center core
-            const coreSize = 15 + Math.sin(waveTime) * 3;
+            // Inner organic core - the "heart" of the entity
+            const coreWave1 = Math.sin(entityTime * 1.2) * 8;
+            const coreWave2 = Math.sin(entityTime * 0.6 + 1) * 5;
+            const coreSize = 20 + coreWave1 + coreWave2;
+
+            // Draw core with glow
             ctx.beginPath();
             ctx.arc(centerX, centerY, coreSize, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(0, 255, 255, ${isSpeaking ? 0.6 : 0.3})`;
+            ctx.fillStyle = `rgba(0, 255, 255, ${isSpeaking ? 0.5 : 0.25})`;
             ctx.fill();
 
+            // Core outline
             ctx.beginPath();
-            ctx.arc(centerX, centerY, coreSize + 2, 0, Math.PI * 2);
-            ctx.strokeStyle = `rgba(0, 255, 255, 0.8)`;
-            ctx.lineWidth = 1;
+            ctx.arc(centerX, centerY, coreSize + 3, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(0, 255, 255, ${isSpeaking ? 0.9 : 0.6})`;
+            ctx.lineWidth = 1.5;
             ctx.stroke();
 
-            waveTime += isSpeaking ? 0.08 : 0.03;
-            requestAnimationFrame(drawWaves);
+            entityTime += isSpeaking ? 0.12 : 0.04;
+            requestAnimationFrame(drawEntity);
         }
 
-        drawWaves();
+        drawEntity();
 
         // DOM Elements
         const micButton = document.getElementById('micButton');
